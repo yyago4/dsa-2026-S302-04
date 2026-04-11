@@ -3,20 +3,103 @@
 #include <stdio.h>
 #include <stdlib.h>
 #include <sys/stat.h>
+#include <string.h>
+#include <ctype.h>
 
-void createaleak() {
-  char *foo = malloc(20 * sizeof(char));
-  printf("Allocated leaking string: %s", foo);
+#define MAX_STR 150
+
+typedef struct house{
+    char street[MAX_STR];
+    int num;
+    double lat;
+    double lon;
+    struct house* next;
+} house;
+
+void normalize_street(char* str){   //amb aquesta funció ajustarem el text segons majusculas, minusucules i abreviatures
+  for(int i = 0; str[i]; i++){  //anem lletra per lletra del text
+    str[i] = tolower(str[i]); //pasem tot el text a minsucules
+  }
+  if (strncmp(str, "c. ", 3) == 0){ //en el cas de que hi hagi l'abreviature c., la convertim en carrer
+    char temp[MAX_STR]; //creem un espai temporal
+    sprintf(temp, "carrer %s", str +3); //escrivim carrer seguit de la resta del text
+    strcpy(str, temp);  //guardem el resulatt en el text original
+  }
+  else if (strncmp(str, "c.", 2) == 0) {
+    char temp[MAX_STR];
+    sprintf(temp, "carrer %s", str +2);
+    strcpy(str, temp);
+  }
 }
+
+//void createaleak() {
+  //char *foo = malloc(20 * sizeof(char));
+  //printf("Allocated leaking string: %s", foo);
+//}
 
 int main() {
-  printf("*****************\nWelcome to DSA!\n*****************\n");
+  char map_name[MAX_STR];
+  char input_type[MAX_STR];
+  int valid = 0; // 0 vol dir Fals (no vàlid), 1 vol dir Cert (vàlid) 
 
-  // how to import and call a function
-  printf("Factorial of 4 is %d\n", fact(4));
+  // Validació del mapa
+  while (valid == 0) {
+      printf("Introduce the map you want to use: (xs_1, xs_2, md_1, lg_1, xl_1 or 2xl_1)\n");
+      scanf("%s", map_name);
 
-  // uncomment and run "make v" to see how valgrind detects memory leaks
-  // createaleak();
+      // Si es valid canviam la variable a 1 per a sortir del while
+      if (strcmp(map_name, "xs_1") == 0 || strcmp(map_name, "xs_2") == 0 ||
+          strcmp(map_name, "md_1") == 0 || strcmp(map_name, "lg_1") == 0 ||
+          strcmp(map_name, "xl_1") == 0 || strcmp(map_name, "2xl_1") == 0) {
+          valid = 1;  //si el mapa existeix, sortim del bucle
+      } else {
+          printf("Invalid map name. Try again.\n");
+      }
+    }
 
-  return 0;
-}
+    house* list = get_map_houses(map_name); //carreguem les dades del mapa triat a la memoria
+
+    printf("How do you want to input your position (address, coordinate or place)?\n");
+    scanf("%s", input_type);
+
+  // Comprovem si ha triat "coordinate" o "place" 
+    if (strcmp(input_type, "coordinate") == 0 || strcmp(input_type, "place") == 0) {
+        printf("Not implemented yet.\n");
+    }
+    else if (strcmp(input_type, "address") == 0) {
+        char address[MAX_STR];  //espais per al carrer que escriura l'usuari
+        int address_number; //espai per al numero
+
+        printf("Enter a street name (e.g. Carrer de Roc Boronat).\n");
+        scanf(" %[^\n]", address);  //llegim el carrer fins que trobi un salt de linea ( incloent si te espais)
+        printf("Enter a house number (e.g. 138).\n");
+        scanf("%d", &address_number);  //llegim el numero de la casa
+
+        //fem una copia  la cual normalitzarem per poder comparar sense errors
+        char search_norm[MAX_STR];
+        strcpy(search_norm, address);
+        normalize_street(search_norm);
+
+        int found = 0;  //varibale per saber si hem trobat la casa
+        house* current = list;  //comencem a busacr desde el principi de la llista
+
+        while (current!=NULL){  //mirem casa per casa fins arribar al final de la llista
+          char current_street_norm[MAX_STR];  //fem espai per poder normalitzar el carrer de la llista
+          strcpy(current_street_norm, current ->street);
+          normalize_street(current_street_norm);  //normaliztem el carrer de la llista
+
+
+          if (strcmp(current_street_norm, search_norm)== 0 && current->num == address_number){  //comprovem si el carrer normalitzat i el numero coincideixen.
+            printf("Coordinates: Lat %f, Lon %f\n", current->lat, current->lon);  //printejem el resultat
+            found = 1;  //marquem que l0hem trobat
+            break;  // sortim del bucle ara queja l'hem trobat
+          }
+          current = current->next;  //pasem a la seguent casa
+        }
+        if (!found){  //avisem si hem mirat totes i no hem trobat res
+          printf("Address not found in this map.\n");
+        }
+    }
+
+    return 0;
+  }
