@@ -135,7 +135,7 @@ int main() {
           }
           current = current->next;  //pasem a la seguent casa
         }
-        if (!found){  //avisem si hem mirat totes i no hem trobat res
+        if (!found){  // si hem mirat totes i no hem trobat res
           if(street_exists){ // caso en que la calle es correcta pero el numero no
             printf("Street found but number %d is invalid. Please choose a valid number:\n", address_number);
             current=list;//posicionamos al principio de la lista de todas las casas
@@ -156,7 +156,8 @@ int main() {
             char suggestions[5][MAX_STR];//hacemos matriz para guardar las 5 sugerencias
             int sug_count=0; // contador de sugerencias
             int max_matches[5] = {0, 0, 0, 0, 0};//para guardar los matches que tiene cada calle (para poner el top y no sol primeros 5)
-            while(current!=NULL && sug_count<5){
+
+            while(current!=NULL){
               char csn[MAX_STR];
               strcpy(csn,current->street);
               normalize_street(csn);
@@ -164,9 +165,9 @@ int main() {
               if(matches>= strlen(search_norm)/2 && matches > 2){ // condiciones para entrar en la lista: parecidos almenos la mitad de la longitud de la str y >2
                 int already_in=-1;//auxiliar para ver si la calle ya esta en la lista
                 for(int i=0;i<sug_count;i++){//la primera iteracion se lo salta ya que es la primera calle y si o si no esta en la lista
-                  if(strcmp(suggestions[i],current->street==0)){ already_in=i;}
+                  if(strcmp(suggestions[i],current->street)==0){ already_in=i;}
                 }
-                if(already_in=-1){//si la calle es nueva probamos de meterla en el top
+                if(already_in==-1){//si la calle es nueva probamos de meterla en el top
                   for(int i=0;i<5;i++){
                     if(matches>max_matches[i]){//si la calle actual es mejor que la del top en posicion i
                       for(int j=4;j>i;j--){//movemos todos los de abajo una posicion abajo
@@ -177,19 +178,19 @@ int main() {
                       strcpy(suggestions[i],current->street);
                       if(sug_count<5){sug_count++;}
                       break;
+                    }
                   }
+
                 }
-
               }
-
+              current=current->next;
             }
-            current=current->next;
-          }
-          for(int i=0;i<sug_count;i++){
+            for(int i=0;i<sug_count;i++){
             printf("%d: %s (Coincidencias: %d)\n",i+1,suggestions[i],max_matches[i]);//imprimimos el top para el usuario
+            }
           }
         }
     }
 
-    return 0;
-  }
+  return 0;
+}
