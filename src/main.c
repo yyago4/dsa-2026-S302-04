@@ -20,15 +20,37 @@ void normalize_street(char* str){   //amb aquesta funció ajustarem el text sego
   for(int i = 0; str[i]; i++){  //anem lletra per lletra del text
     str[i] = tolower(str[i]); //pasem tot el text a minsucules
   }
-  if (strncmp(str, "c. ", 3) == 0){ //en el cas de que hi hagi l'abreviature c., la convertim en carrer
-    char temp[MAX_STR]; //creem un espai temporal
-    sprintf(temp, "carrer %s", str +3); //escrivim carrer seguit de la resta del text
-    strcpy(str, temp);  //guardem el resulatt en el text original
+  char temp[MAX_STR]; //fem un espai temporal per fesl els canvis en el text
+  int offset = 0;   //carecater que saltarem de l'abreviature
+
+  if (strncmp(str, "c.", 2)==0){  //en el cas de que hi hagi l'abreviature c., la convertim en carrer
+    if (str[2]== ' '){  // si és c. amb un espai "c. " saltem 3 espais
+      offset = 3;
+    }else{
+      offset = 2; //si no te espai "c." saltem 2 espais
+    }
+    sprintf(temp, "carrer %s", str + offset); //escrivim carrer seguit del nom complet
+    strcpy(str, temp);  //guardem aquest resulat en el text original
   }
-  else if (strncmp(str, "c.", 2) == 0) {
-    char temp[MAX_STR];
-    sprintf(temp, "carrer %s", str +2);
-    strcpy(str, temp);
+
+  else if(strncmp(str, "av.", 3) == 0){ //en el cas de que hi hagi l'abreviature av., la convertim en avinguda
+    if (str[3] == ' '){ // si és av. amb un espai "av. " saltem 4 espais
+      offset = 4;
+    }else{  //si no te espai "av." saltem 3 espais
+      offset = 3; 
+    }
+    sprintf(temp, "avinguda %s", str + offset); //escrivim avinguda seguit del nom complet
+    strcpy(str, temp);  //guardem aquest resulat en el text original
+  }
+
+  else if(strncmp(str, "ptge.", 5) == 0){ //en el cas de que hi hagi l'abreviature ptge., la convertim en passatge
+    if (str[5] == ' '){ // si és ptge. amb un espai "pte. " saltem 6 espais
+      offset = 6;
+    }else{  //si no te espai "av." saltem 5 espais
+      offset = 5;
+    }
+    sprintf(temp, "passatge %s", str + offset); //escrivim passatge seguit del nom complet
+    strcpy(str, temp);  //guardem aquest resulat en el text original
   }
 }
 
