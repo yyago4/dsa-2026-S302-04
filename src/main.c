@@ -114,6 +114,13 @@ for(int i=0; s1[i]!='\0'&& s2[i]!='\0';i++){
 }
 return matches;
 }
+<<<<<<< HEAD
+=======
+//void createaleak() {
+  //char *foo = malloc(20 * sizeof(char));
+  //printf("Allocated leaking string: %s", foo);
+//}
+>>>>>>> 690c218ca51e5610386ac4cdd319a275930ae5de
 
 int main() {
   char map_name[MAX_STR];
@@ -202,6 +209,12 @@ int main() {
 
         
 
+<<<<<<< HEAD
+=======
+
+
+
+>>>>>>> 690c218ca51e5610386ac4cdd319a275930ae5de
         while (current!=NULL){  //mirem casa per casa fins arribar al final de la llista
           char current_street_norm[MAX_STR];  //fem espai per poder normalitzar el carrer de la llista
           strcpy(current_street_norm, current ->street);
@@ -276,4 +289,8 @@ int main() {
     }
 
   return 0;
+<<<<<<< HEAD
 }
+=======
+}
+>>>>>>> 690c218ca51e5610386ac4cdd319a275930ae5de
