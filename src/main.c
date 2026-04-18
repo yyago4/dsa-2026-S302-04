@@ -128,7 +128,7 @@ void normalize_street(
   }
 }
 
-int count_matches(
+/*int count_matches(
     const char *s1,
     const char *s2) { // implementamos una funcion que compara los caracteres de
                       // una str con la otra en las miismas posiciones
@@ -139,7 +139,37 @@ int count_matches(
     }
   }
   return matches;
+}*/
+
+int min3(int a, int b, int c){// funcion auxiliar para livenstein
+  int m=a;
+  if(b<m){m=b;}
+  if(c<m){m=c;}
+  return m;
 }
+
+int livenstein(const char *s1, const char *s2){
+  int len1=strlen(s1);
+  int len2=strlen(s2);
+  int matrix[len1+1][len2 +1];//creamos la matriz de las comparaciones
+
+  for(int i=0; i<=len1; i++){matrix[i][0]=i;}//rellenamos la primera fila y columna con el coste inicial (transformar a una cadena vacia)
+  for(int j=0;j<=len2;j++){matrix[0][j]=j;}
+
+  for(int i=1; i<=len1; i++){
+     for(int j=1;j<=len2;j++){
+      int cost;
+      if(s1[i-1]==s2[j-1]){//determinamos el coste dependiendo si la substitucion por el numero de la diagonal es porque las letras son las mismas o porque es una sustitucion
+       cost=0;//letras iguales
+      }else{cost=1;}//sustitucion
+
+      matrix[i][j]=min3(matrix[i-1][j]+1,matrix[i][j-1]+1,matrix[i-1][j-1]+cost);//buscamos el valor mas pequeños de los cercanos(borrar,insertar,sustituir)
+     }
+  }
+  return matrix[len1][len2];//devolvemos la distancia de livenstein total(total de cambios para que el str1 sea = a str2)(ultima celda)
+}
+
+
 
 int main() {
   char map_name[MAX_STR];
@@ -200,26 +230,39 @@ int main() {
     if (!found_p) { // si la cerca exacta ha fallat, foun_p = 0
       printf("Place not know. Did you mean: \n"); // avisem que ara buscarem
                                                   // similars
+      char best_names[5][MAX_STR];//creamos matriz para guardar los 5 nombres del top
+      int best_dist[5]={999,999,999,999,999};//inicializamos los valores del top en valores altos ya que buscamos los mas pequeños
       curr_p =
           place_list; // tonem a començar des de l'inici de la llista de llocs
       int sug_count =
           0; // contador per nomes mostrar certa quantitat de sugeriments
 
-      while (curr_p != NULL &&
-             sug_count <
-                 5) { // mirem tota la llista i parem quan en tinguem 5 opcions
-        if (strstr(curr_p->name, search_place) != NULL) {
-          printf("- %s (at %f, %f)\n", curr_p->name, curr_p->lat,
-                 curr_p->lon); // ensenyem la opcio
-          sug_count++;         // sumem un sugeriment a la llista
+      while (curr_p != NULL) { //sequential serching desde el rpincipio hasta el final de la lista
+        int dist=livenstein(search_place,curr_p->name);
+        for(int i=0;i<5;i++){
+          if(dist<best_dist[i]){// si el sitio actual es mejor que el del top en posicion i
+            for(int j=4; j>i; j--){// movemos todos los de abajo una posicion abajo
+              best_dist[j]=best_dist[j-1];
+              strcpy(best_names[j],best_names[j-1]);
+            }
+            best_dist[i]=dist;//insertamos el nuevo en el top
+            strcpy(best_names[i],curr_p->name);
+            if(sug_count<5){ sug_count++;};
+            break;
+          }
         }
-        curr_p = curr_p->next; // pasem al seguent lloc per seguir comprovant
-      }
-      if (sug_count == 0) { // si finalment no trobem cap lloc semblant al que
-                            // busca l'usuari diem  que no hem trobat res
-        printf("No similar places found.\n");
-      }
-    }
+          curr_p=curr_p->next;
+        }
+        if(sug_count==0){// si no hemos encontrado ningun parecido lo desimos
+          printf("No similar places found\n");
+        }else{//imprimimos el top de parecidos
+          printf("El top:\n");
+          for(int i=0;i<sug_count; i++){
+            printf("%s (Distancia: %d)\n ",best_names[i],best_dist[i]);
+          }
+        }
+    
+    } 
   }
 
   else if (strcmp(input_type, "address") == 0) {
@@ -288,55 +331,52 @@ int main() {
       } else { // caso que la calle no se sepa
         printf("Street not known. Did you mean one of these?\n");
         current = list;
-        char suggestions[5][MAX_STR]; // hacemos matriz para guardar las 5
+        char best_streets[5][MAX_STR]; // hacemos matriz para guardar las 5
                                       // sugerencias
         int sug_count = 0;            // contador de sugerencias
-        int max_matches[5] = {
-            0, 0, 0, 0, 0}; // para guardar los matches que tiene cada calle
+        int best_dist[5] = {
+            999, 999, 999, 999, 999}; // para guardar los matches que tiene cada calle
                             // (para poner el top y no sol primeros 5)
 
         while (current != NULL) {
           char csn[MAX_STR];
           strcpy(csn, current->street);
           normalize_street(csn);
-          int matches = count_matches(search_norm, csn); // num de parecidos
-          if (matches >= strlen(search_norm) / 2 &&
-              matches > 2) { // condiciones para entrar en la lista: parecidos
-                             // almenos la mitad de la longitud de la str y >2
+          int dist = livenstein(search_norm,csn); // num de parecidos
             int already_in =
-                -1; // auxiliar para ver si la calle ya esta en la lista
+                0; // auxiliar para ver si la calle ya esta en la lista
+
             for (int i = 0; i < sug_count;
                  i++) { // la primera iteracion se lo salta ya que es la primera
                         // calle y si o si no esta en la lista
-              if (strcmp(suggestions[i], current->street) == 0) {
-                already_in = i;
+              if (strcmp(best_streets[i], current->street) == 0) {
+                already_in = 1  ;
               }
             }
-            if (already_in ==
-                -1) { // si la calle es nueva probamos de meterla en el top
+            if (!already_in) { // si la calle es nueva probamos de meterla en el top
               for (int i = 0; i < 5; i++) {
-                if (matches > max_matches[i]) { // si la calle actual es mejor
+                if (dist < best_dist[i]) { // si la calle actual es mejor
                                                 // que la del top en posicion i
                   for (int j = 4; j > i;
                        j--) { // movemos todos los de abajo una posicion abajo
-                    max_matches[j] = max_matches[j - 1];
-                    strcpy(suggestions[j], suggestions[j - 1]);
+                    best_dist[j] = best_dist[j - 1];
+                    strcpy(best_streets[j], best_streets[j - 1]);
                   }
-                  max_matches[i] = matches; // metemos el nuevo
-                  strcpy(suggestions[i], current->street);
+                  best_dist[i] = dist; // metemos el nuevo
+                  strcpy(best_streets[i], current->street);
                   if (sug_count < 5) {
                     sug_count++;
                   }
                   break;
                 }
               }
-            }
+            
           }
           current = current->next;
         }
         for (int i = 0; i < sug_count; i++) {
-          printf("%d: %s (Coincidencias: %d)\n", i + 1, suggestions[i],
-                 max_matches[i]); // imprimimos el top para el usuario
+          printf("%d: %s (Coincidencias: %d)\n", i + 1, best_streets[i],
+                 best_dist[i]); // imprimimos el top para el usuario
         }
       }
     }
@@ -344,3 +384,4 @@ int main() {
 
   return 0;
 }
+
