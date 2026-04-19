@@ -250,7 +250,7 @@ int livenstein(const char *s1, const char *s2) {
           s2[j - 1]) { // determinamos el coste dependiendo si la substitucion
                        // por el numero de la diagonal es porque las letras son
                        // las mismas o porque es una sustitucion
-        cost = 0; // letras iguales
+        cost = 0;      // letras iguales
       } else {
         cost = 1;
       } // sustitucion
