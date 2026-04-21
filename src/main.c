@@ -262,7 +262,8 @@ de cambios para que el str1 sea = a str2)(ultima celda)
 int main() {
   unit_test_houses(); // cridem a la prova de seguretat abans d'executar el
                       // nostre programa
-
+  unit_test_places(); // cridem a la prova abans d'executar el
+                      // nostre programa
   char map_name[MAX_STR];
   char input_type[MAX_STR];
   int valid = 0; // 0 vol dir Fals (no vàlid), 1 vol dir Cert (vàlid)

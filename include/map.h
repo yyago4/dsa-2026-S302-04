@@ -19,6 +19,7 @@ typedef struct place {
 } place;
 
 void unit_test_houses();
+void unit_test_places();
 place *get_map_places(char *map_name);
 house *get_map_houses(char *map_name);
 void normalize_street(char *str);

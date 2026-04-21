@@ -27,11 +27,70 @@ void unit_test_houses() {
           0) { // confirmem si la memoria ha guardat el que hem demanat
     printf("The house was created and saved successfully.\n");
   } else {
-    printf("ERROR: Information is corrupted.\n"); // en el cas contraro, avisem
+    printf("ERROR: Information is corrupted.\n"); // en el cas contrari, avisem
                                                   // de que hi ha un error
   }
   free(tenda); // retornem la memoria a l'ordinador
   printf("Security test completed successfully\n\n");
+}
+void unit_test_places() {
+  printf("Starting places security test\n");
+
+  place *sagrada = (place *)malloc(sizeof(
+      place)); // demanem memoria a l'ordinador per poder guardar un lloc
+  if (sagrada == NULL) { // ens avisa si no te memoria disponible
+    printf("Error: Out of memory!\n");
+    return;
+  }
+  strcpy(
+      sagrada->name,
+      "Sagrada Familia"); // escrivim el nom d'un lloc inventat dins de la memoria
+  sagrada->lat = 41.4036;
+  sagrada->lon = 2.1744;
+  sagrada->next = NULL;
+
+  place *upf = (place *)malloc(sizeof(
+      place)); // demanem memoria a l'ordinador per poder guardar un altre lloc
+  if (upf == NULL) { // ens avisa si no te memoria disponible
+    printf("Error: Out of memory!\n");
+    free(sagrada);
+    return;
+  }
+  strcpy(
+      upf->name,
+      "UPF"); // escrivim el nom d'un altre lloc inventat dins de la memoria
+  upf->lat = 41.3851;
+  upf->lon = 2.1734;
+  upf->next = NULL;
+
+  sagrada->next = upf; // connectem el primer lloc amb el segon per crear la llista
+
+  place *trobat = NULL;
+  place *actual = sagrada;
+  while (actual != NULL) { // recorrem tota la llista fins a arribar al final
+    if (strcmp(actual->name, "UPF") == 0) { // si el nom coincideix amb el que busquem, parem
+      trobat = actual;
+      break;
+    }
+    actual = actual->next;
+  }
+
+  if (trobat != NULL &&
+      strcmp(trobat->name, "UPF") ==
+          0) { // confirmem si la memoria ha guardat el que hem demanat
+    printf("The place was created and found successfully.\n");
+  } else {
+    printf("ERROR: Place information is corrupted.\n"); // en el cas contrari, avisem
+                                                        // de que hi ha un error
+  }
+
+  place *p = sagrada;
+  while (p != NULL) { 
+    place *seg = p->next;
+    free(p); // retornem la memoria a l'ordinador
+    p = seg;
+  }
+  printf("Places security test completed successfully\n\n");
 }
 
 place *get_map_places(char *map_name) {
