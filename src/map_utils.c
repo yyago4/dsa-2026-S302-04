@@ -36,15 +36,15 @@ void unit_test_houses() {
 void unit_test_places() {
   printf("Starting places security test\n");
 
-  place *sagrada = (place *)malloc(sizeof(
-      place)); // demanem memoria a l'ordinador per poder guardar un lloc
+  place *sagrada = (place *)malloc(
+      sizeof(place)); // demanem memoria a l'ordinador per poder guardar un lloc
   if (sagrada == NULL) { // ens avisa si no te memoria disponible
     printf("Error: Out of memory!\n");
     return;
   }
-  strcpy(
-      sagrada->name,
-      "Sagrada Familia"); // escrivim el nom d'un lloc inventat dins de la memoria
+  strcpy(sagrada->name,
+         "Sagrada Familia"); // escrivim el nom d'un lloc inventat dins de la
+                             // memoria
   sagrada->lat = 41.4036;
   sagrada->lon = 2.1744;
   sagrada->next = NULL;
@@ -56,19 +56,20 @@ void unit_test_places() {
     free(sagrada);
     return;
   }
-  strcpy(
-      upf->name,
-      "UPF"); // escrivim el nom d'un altre lloc inventat dins de la memoria
+  strcpy(upf->name,
+         "UPF"); // escrivim el nom d'un altre lloc inventat dins de la memoria
   upf->lat = 41.3851;
   upf->lon = 2.1734;
   upf->next = NULL;
 
-  sagrada->next = upf; // connectem el primer lloc amb el segon per crear la llista
+  sagrada->next =
+      upf; // connectem el primer lloc amb el segon per crear la llista
 
   place *trobat = NULL;
   place *actual = sagrada;
   while (actual != NULL) { // recorrem tota la llista fins a arribar al final
-    if (strcmp(actual->name, "UPF") == 0) { // si el nom coincideix amb el que busquem, parem
+    if (strcmp(actual->name, "UPF") ==
+        0) { // si el nom coincideix amb el que busquem, parem
       trobat = actual;
       break;
     }
@@ -80,12 +81,13 @@ void unit_test_places() {
           0) { // confirmem si la memoria ha guardat el que hem demanat
     printf("The place was created and found successfully.\n");
   } else {
-    printf("ERROR: Place information is corrupted.\n"); // en el cas contrari, avisem
-                                                        // de que hi ha un error
+    printf("ERROR: Place information is corrupted.\n"); // en el cas contrari,
+                                                        // avisem de que hi ha
+                                                        // un error
   }
 
   place *p = sagrada;
-  while (p != NULL) { 
+  while (p != NULL) {
     place *seg = p->next;
     free(p); // retornem la memoria a l'ordinador
     p = seg;
@@ -329,7 +331,7 @@ void free_houses(house *head) {
   house *curr = head;
   while (curr != NULL) { // recorrem tota la llista de cases
     house *next = curr->next;
-    free(curr); // alliberem el node actual
+    free(curr);  // alliberem el node actual
     curr = next; // passem al següent
   }
 }
@@ -338,7 +340,7 @@ void free_places(place *head) {
   place *curr = head;
   while (curr != NULL) { // recorrem tota la llista de llocs
     place *next = curr->next;
-    free(curr); // alliberem el node actual
+    free(curr);  // alliberem el node actual
     curr = next; // passem al següent
   }
 }

@@ -70,7 +70,8 @@ int main() {
     while (curr_p != NULL) { // mirem cada lloc de la llista fins al final
       if (strcmp(curr_p->name, search_place) == 0) { // si el nom coincideix
         matches[match_count++] = curr_p; // el guardem a la llista de trobats
-        if (match_count >= MAX_STR) break; // si la llista s'omple, parem
+        if (match_count >= MAX_STR)
+          break; // si la llista s'omple, parem
       }
       curr_p = curr_p->next; // pasem al seguent lloc de la cadena
     }
@@ -146,13 +147,14 @@ int main() {
 
     printf("Enter a street name (e.g. Carrer de Roc Boronat).\n");
     scanf(" %149[^\n]", address); // llegim el carrer fins que trobi un salt de
-                                // linea ( incloent si te espais)
+                                  // linea ( incloent si te espais)
     printf("Enter a house number (e.g. 138).\n");
-    if (scanf("%d", &address_number) != 1) { // comprovem que hagi escrit un numero
-        printf("Invalid number format.\n");
-        free_houses(list); // si falla, alliberem la memoria abans de sortir
-        free_places(place_list);
-        return 1;
+    if (scanf("%d", &address_number) !=
+        1) { // comprovem que hagi escrit un numero
+      printf("Invalid number format.\n");
+      free_houses(list); // si falla, alliberem la memoria abans de sortir
+      free_places(place_list);
+      return 1;
     }
 
     // fem una copia  la cual normalitzarem per poder comparar sense errors
@@ -263,8 +265,8 @@ int main() {
     }
   }
 
-  free_houses(list); // retornem la memoria de les cases a l'ordinador
+  free_houses(list);       // retornem la memoria de les cases a l'ordinador
   free_places(place_list); // retornem la memoria dels llocs a l'ordinador
 
   return 0;
-} 
+}
