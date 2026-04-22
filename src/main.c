@@ -267,4 +267,4 @@ int main() {
   free_places(place_list); // retornem la memoria dels llocs a l'ordinador
 
   return 0;
-}
+} 
