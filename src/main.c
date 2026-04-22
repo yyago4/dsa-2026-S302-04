@@ -286,7 +286,16 @@ int main() {
 
   house *list = get_map_houses(
       map_name); // carreguem les dades del mapa triat a la memoria
-  place *place_list = get_map_places(map_name); // carreguem la llista e llocs
+  int house_count = 0;
+  for (house *h = list; h != NULL; h = h->next)
+    house_count++;
+  printf("%d houses loaded\n", house_count);
+
+  place *place_list = get_map_places(map_name); // carreguem la llista de llocs
+  int place_count = 0;
+  for (place *p = place_list; p != NULL; p = p->next)
+    place_count++;
+  printf("%d places loaded\n\n", place_count);
 
   printf("How do you want to input your position (address, coordinate or "
          "place)?\n");
@@ -311,7 +320,7 @@ int main() {
     while (curr_p != NULL) { // mirem cada lloc de la llista fins al final
       if (strcmp(curr_p->name, search_place) ==
           0) { // si el nom es exactament igual al buscat
-        printf("Found at (%f, %f)\n", curr_p->lat,
+        printf("\n    Found at (%.6f, %.6f)\n", curr_p->lat,
                curr_p->lon); // mostrem les coordenades
         found_p = 1;         // marquerm que l'hem trobat
         break;               // sortim del bucle
@@ -397,7 +406,7 @@ int main() {
           0) { // comprovem si el carrer normalitzat .
         street_exists = 1;
         if (current->num == address_number) { // si el numero tambe coincideix
-          printf("Coordinates: Lat %f, Lon %f\n", current->lat,
+          printf("\n    Found at (%.6f, %.6f)\n", current->lat,
                  current->lon); // printejem el resultat
           found = 1;            // marquem que l0hem trobat
           break;                // sortim del bucle ara queja l'hem trobat
