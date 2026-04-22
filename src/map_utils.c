@@ -324,3 +324,21 @@ int livenstein(const char *s1, const char *s2) {
                [len2]; // devolvemos la distancia de livenstein total(total de
                        // cambios para que el str1 sea = a str2)(ultima celda)
 }
+
+void free_houses(house *head) {
+  house *curr = head;
+  while (curr != NULL) { // recorrem tota la llista de cases
+    house *next = curr->next;
+    free(curr); // alliberem el node actual
+    curr = next; // passem al següent
+  }
+}
+
+void free_places(place *head) {
+  place *curr = head;
+  while (curr != NULL) { // recorrem tota la llista de llocs
+    place *next = curr->next;
+    free(curr); // alliberem el node actual
+    curr = next; // passem al següent
+  }
+}

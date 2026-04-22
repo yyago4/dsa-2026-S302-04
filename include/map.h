@@ -25,5 +25,7 @@ house *get_map_houses(char *map_name);
 void normalize_street(char *str);
 int livenstein(const char *s1, const char *s2);
 int min3(int a, int b, int c);
+void free_houses(house *head);
+void free_places(place *head);
 
 #endif
