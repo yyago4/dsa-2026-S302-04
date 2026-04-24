@@ -160,6 +160,7 @@ void unit_test_places() {
   }
   printf("Places security test completed successfully\n\n");
 }
+<<<<<<< HEAD
 
 double toRadians(double degree) { return degree * (M_PI / 180.0); }
 
@@ -273,6 +274,8 @@ edge *get_map_streets(char *map_name) {
   fclose(f);
   return head;
 }
+=======
+>>>>>>> 6540fd8652f1abb16f26b5cd3a4d2f0924600d83
 
 place *get_map_places(char *map_name) {
   char filename[MAX_STR]; // creem un espai per poder guardar el nom del fitxer
@@ -522,6 +525,7 @@ void free_places(place *head) {
     free(curr);  // alliberem el node actual
     curr = next; // passem al següent
   }
+<<<<<<< HEAD
 }
 
 void free_edges(edge *head) {
@@ -531,4 +535,6 @@ void free_edges(edge *head) {
     free(curr);  // alliberem el node actual
     curr = next; // passem al següent
   }
+=======
+>>>>>>> 6540fd8652f1abb16f26b5cd3a4d2f0924600d83
 }

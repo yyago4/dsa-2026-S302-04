@@ -51,6 +51,7 @@ int main() {
     street_count++;
   printf("%d street loaded\n\n", street_count);
 
+
   printf("How do you want to input your position (address, coordinate or "
          "place)?\n");
   scanf("%149s", input_type);
@@ -333,6 +334,7 @@ int main() {
   free_houses(list);       // retornem la memoria de les cases a l'ordinador
   free_places(place_list); // retornem la memoria dels llocs a l'ordinador
   free_edges(street_list); // retornem la memoria dels carrers a l'ordinador
+
 
   return 0;
 }
