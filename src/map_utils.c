@@ -4,6 +4,71 @@
 #include <stdio.h>
 #include <stdlib.h>
 #include <string.h>
+#include <math.h>
+#include <float.h>
+
+
+double toDegrees(double radians) {
+    return radians * (180.0 / M_PI);
+}
+
+double toRadians(double degree) {
+    return degree * (M_PI / 180.0);
+}
+
+Position midpoint(Position a, Position b) {
+    double lat1 = toRadians(a.lat);
+    double lon1 = toRadians(a.lon);
+    double lat2 = toRadians(b.lat);
+    double lon2 = toRadians(b.lon);
+
+    double x1 = cos(lat1) * cos(lon1);
+    double y1 = cos(lat1) * sin(lon1);
+    double z1 = sin(lat1);
+
+    double x2 = cos(lat2) * cos(lon2);
+    double y2 = cos(lat2) * sin(lon2);
+    double z2 = sin(lat2);
+
+    double x = (x1 + x2) / 2.0;
+    double y = (y1 + y2) / 2.0;
+    double z = (z1 + z2) / 2.0;
+
+    double lon = atan2(y, x);
+    double hyp = sqrt(x * x + y * y);
+    double lat = atan2(z, hyp);
+
+    Position mid;
+    mid.lat = toDegrees(lat);
+    mid.lon = toDegrees(lon);
+    return mid;
+}
+
+long long get_closest_street(edge *list, double u_lat, double u_lon){
+  if (list == NULL){  //si la llista esta buida sortim
+    return -1;
+  }
+  edge *closest_edge = NULL;  //aqui guardarem quin sera el carrer mes proper
+  double min_dist = DBL_MAX;  //comencem amb una distancia infinita
+  Position user_pos ={u_lat, u_lon};  //guardem la posicio de l'usuari
+
+  edge *curr=list;  //començem pel primer carrer de la llista
+  while (curr!= NULL){
+    Position p1 = {curr->lat1, curr->lon1}; //agafem les coorednades de inici i final del segment de carrer
+    Position p2 = {curr->lat2, curr->lon2};
+
+    Position mid =midpoint(p1,p2);  //punt que queda al mitg d'aquets carrer
+    double d = haversine(user_pos, mid);  //calculem distancia real entre l'usuari i el mig del carrer
+
+    if (d<min_dist){
+      min_dist = d; //guardem aquesta distancia, com la nova distancia a superar
+      closest_edge =curr; //apuntem que aquest actualment es el carrer mes proper
+    }
+    curr = curr->next;  //pasem al seguent carrer de la llista
+  }
+  return (closest_edge !=NULL) ? closest_edge->id: -1;  //si trobem un carrer donem el seu numero d'indentificacio i sino tronem error
+  
+}
 
 void unit_test_houses() {
   printf("Starting system security test\n");
@@ -27,11 +92,179 @@ void unit_test_houses() {
           0) { // confirmem si la memoria ha guardat el que hem demanat
     printf("The house was created and saved successfully.\n");
   } else {
-    printf("ERROR: Information is corrupted.\n"); // en el cas contraro, avisem
+    printf("ERROR: Information is corrupted.\n"); // en el cas contrari, avisem
                                                   // de que hi ha un error
   }
   free(tenda); // retornem la memoria a l'ordinador
   printf("Security test completed successfully\n\n");
+}
+void unit_test_places() {
+  printf("Starting places security test\n");
+
+  place *sagrada = (place *)malloc(
+      sizeof(place)); // demanem memoria a l'ordinador per poder guardar un lloc
+  if (sagrada == NULL) { // ens avisa si no te memoria disponible
+    printf("Error: Out of memory!\n");
+    return;
+  }
+  strcpy(sagrada->name,
+         "Sagrada Familia"); // escrivim el nom d'un lloc inventat dins de la
+                             // memoria
+  sagrada->lat = 41.4036;
+  sagrada->lon = 2.1744;
+  sagrada->next = NULL;
+
+  place *upf = (place *)malloc(sizeof(
+      place)); // demanem memoria a l'ordinador per poder guardar un altre lloc
+  if (upf == NULL) { // ens avisa si no te memoria disponible
+    printf("Error: Out of memory!\n");
+    free(sagrada);
+    return;
+  }
+  strcpy(upf->name,
+         "UPF"); // escrivim el nom d'un altre lloc inventat dins de la memoria
+  upf->lat = 41.3851;
+  upf->lon = 2.1734;
+  upf->next = NULL;
+
+  sagrada->next =
+      upf; // connectem el primer lloc amb el segon per crear la llista
+
+  place *trobat = NULL;
+  place *actual = sagrada;
+  while (actual != NULL) { // recorrem tota la llista fins a arribar al final
+    if (strcmp(actual->name, "UPF") ==
+        0) { // si el nom coincideix amb el que busquem, parem
+      trobat = actual;
+      break;
+    }
+    actual = actual->next;
+  }
+
+  if (trobat != NULL &&
+      strcmp(trobat->name, "UPF") ==
+          0) { // confirmem si la memoria ha guardat el que hem demanat
+    printf("The place was created and found successfully.\n");
+  } else {
+    printf("ERROR: Place information is corrupted.\n"); // en el cas contrari,
+                                                        // avisem de que hi ha
+                                                        // un error
+  }
+
+  place *p = sagrada;
+  while (p != NULL) {
+    place *seg = p->next;
+    free(p); // retornem la memoria a l'ordinador
+    p = seg;
+  }
+  printf("Places security test completed successfully\n\n");
+}
+
+double toRadians(double degree) {
+    return degree * (M_PI / 180.0);
+}
+
+double haversine(Position posA, Position posB) {
+    double lat1 = toRadians(posA.lat);
+    double lon1 = toRadians(posA.lon);
+    double lat2 = toRadians(posB.lat);
+    double lon2 = toRadians(posB.lon);
+
+    double dLat = lat2 - lat1;
+    double dLon = lon2 - lon1;
+    double a = pow(sin(dLat / 2), 2) +
+    cos(lat1) * cos(lat2) * pow(sin(dLon / 2), 2);
+    double c = 2 * atan2(sqrt(a), sqrt(1 - a));
+    return EARTH_RADIUS * c;
+}
+
+edge *get_map_streets(char *map_name){
+  char filename[MAX_STR]; //preparem espai per escriure el nom de fitxer
+  sprintf(filename, "maps/%s/streets.txt", map_name); //busquem al fitxer del mapa que volem
+
+  FILE *f = fopen(filename, "r"); // obrim el fitxer en mode lectura
+  if (f == NULL) { // si no hem pogut obrir el fitxer, avisem i retornem Null
+    printf("Error opening streets file.\n");
+    return NULL;
+  }
+
+  edge *head = NULL;     // punter el primer element de la llista
+  edge *tail = NULL;     // punter a l'ultim element de la llista
+  char line[MAX_STR * 2]; // espai per poder guardar temporalment cada linea que
+                          // hem llegit
+  while (fgets(line, sizeof(line), f)) {
+    edge *new_e = (edge *)malloc(sizeof(edge)); // reservem memoria ram per a una fitxa nova
+    if( new_e == NULL){ //si l'rodinandor no te més espai de meomria sortim del bucle
+      break;
+    }
+      line[strcspn(line, "\n")] = '\0'; //esborrem el salt de linea final
+      char *token = strtok(line, ",");  // bsuquem el primer troç de dades abans de la primera coma
+      if (token == NULL){ //si la linea esta buida retornem el espai i seguim
+        free(new_e);
+        continue;
+      }
+      new_e->node1 = atoll(token);  //guardem el nom de la primera cruilla 
+
+      token = strtok(NULL, ",");  //busquem el següent tros despres de la primera coma
+      if (token == NULL){
+        free(new_e);
+        continue;
+      }
+      new_e->lat1=atof(token);  //guardem la latitud de la primera cruilla
+
+      token = strtok(NULL, ",");  //busquem el següent tros
+      if (token == NULL){
+        free(new_e);
+        continue;
+      }
+      new_e->lon1=atof(token);  //guardme la longitud de la primera cruilla
+
+      token = strtok(NULL, ",");  //busquem el següent tros
+      if (token == NULL){
+        free(new_e);
+        continue;
+      }
+      new_e->node2=atoll(token);  //guardem el numero de la segona cruilla
+
+      token = strtok(NULL, ",");  //busquem el següent tros
+      if (token == NULL){
+        free(new_e);
+        continue;
+      }
+      new_e->lat2=atof(token);  //guardem la latitud de la segona cruilla
+
+      token = strtok(NULL, ",");  //busquem el següent tros
+      if (token == NULL){
+        free(new_e);
+        continue;
+      }
+      new_e->lon2=atof(token);  //guardem la longitud de la segona cruilla
+
+      token = strtok(NULL, ",");  //busquem el següent tros
+      if (token == NULL){
+        free(new_e);
+        continue;
+      }
+      new_e->length=atof(token);  //guardem quants metres fa de llarga aquest tram de carrer
+
+      token = strtok(NULL, ",");  //l'ultim troç de dades es el nom
+      if (token == NULL){
+        free(new_e);
+        continue;
+      }
+      strcpy(new_e->name, token); //copiem el nom de carrer dins de la fitxa
+
+      new_e->next = NULL; //com aquest sera l'ultima de la llista, seguidament ja no hi ha cap altre carrrer
+      if (head == NULL){  //si la llista estaba buida, el carrer pasa a ser el primer i ultim de la llista
+        head = new_e;
+        tail = new_e;
+      }else{
+        tail->next =new_e;  //posem el nou carrer al costat del que ja teniem
+        tail = new_e; //el nou carrer pasa a ser el ultim de la fila
+      }
+    }
+  fclose(f);
+  return head;
 }
 
 place *get_map_places(char *map_name) {
@@ -264,4 +497,31 @@ int livenstein(const char *s1, const char *s2) {
   return matrix[len1]
                [len2]; // devolvemos la distancia de livenstein total(total de
                        // cambios para que el str1 sea = a str2)(ultima celda)
+}
+
+void free_houses(house *head) {
+  house *curr = head;
+  while (curr != NULL) { // recorrem tota la llista de cases
+    house *next = curr->next;
+    free(curr);  // alliberem el node actual
+    curr = next; // passem al següent
+  }
+}
+
+void free_places(place *head) {
+  place *curr = head;
+  while (curr != NULL) { // recorrem tota la llista de llocs
+    place *next = curr->next;
+    free(curr);  // alliberem el node actual
+    curr = next; // passem al següent
+  }
+}
+
+void free_edges(edge *head){
+  edge *curr = head;
+  while (curr != NULL) { // recorrem tota la llista de llocs
+    edge *next = curr->next;
+    free(curr);  // alliberem el node actual
+    curr = next; // passem al següent
+  }
 }
