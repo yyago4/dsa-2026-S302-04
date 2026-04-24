@@ -60,7 +60,6 @@ int livenstein(const char *s1, const char *s2);
 int min3(int a, int b, int c);
 void free_houses(house *head);
 void free_places(place *head);
-<<<<<<< HEAD
 edge *get_mep_streets(char *map_name);
 void free_nodes(node *head);
 void free_edges(edge *head);
@@ -70,7 +69,5 @@ double toDegrees(double radians);
 double haversine(Position posA, Position posB);
 Position midpoint(Position a, Position b);
 long long get_closest_street(edge *list, double u_lat, double u_lon);
-=======
->>>>>>> 6540fd8652f1abb16f26b5cd3a4d2f0924600d83
 
 #endif

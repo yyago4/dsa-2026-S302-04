@@ -161,8 +161,6 @@ void unit_test_places() {
   printf("Places security test completed successfully\n\n");
 }
 
-double toRadians(double degree) { return degree * (M_PI / 180.0); }
-
 double haversine(Position posA, Position posB) {
   double lat1 = toRadians(posA.lat);
   double lon1 = toRadians(posA.lon);
