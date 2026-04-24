@@ -46,8 +46,8 @@ int main() {
   printf("%d places loaded\n\n", place_count);
 
   edge *street_list = get_map_streets(map_name);
-  int  street_count = 0;
-  for (edge *e=street_list; e !=NULL; e = e->next)
+  int street_count = 0;
+  for (edge *e = street_list; e != NULL; e = e->next)
     street_count++;
   printf("%d street loaded\n\n", street_count);
 
@@ -59,37 +59,59 @@ int main() {
   if (strcmp(input_type, "coordinate") == 0) {
     double u_lat;
     double u_lon;
-    if (scanf("%lf %lf", &u_lat, &u_lon)!= 2){  //llegim els 2 numeros posats per l'usuari, si no son numeros printeja
+    if (scanf("%lf %lf", &u_lat, &u_lon) !=
+        2) { // llegim els 2 numeros posats per l'usuari, si no son numeros
+             // printeja
       printf("Invalid coordinates.\n");
-    }else{
-      long long closest_id = get_closest_street(street_list, u_lat, u_lon); //busquem quin es el carrer més proper al punt
+    } else {
+      long long closest_id = get_closest_street(
+          street_list, u_lat,
+          u_lon); // busquem quin es el carrer més proper al punt
 
-      if (closest_id == -1){
-        printf("No streets found.\n");  //si no trobem cap carrer avisem
-      }else{
-        edge *target = street_list; //comencem a mirar la llista de carrers des de l'inici
-        while (target !=NULL && target->id != closest_id){  //busquem fins trobar el carrer amb el mateix ID que el mes proper
-          target = target->next;  //pasem al seguent carrer de la llista
+      if (closest_id == -1) {
+        printf("No streets found.\n"); // si no trobem cap carrer avisem
+      } else {
+        edge *target =
+            street_list; // comencem a mirar la llista de carrers des de l'inici
+        while (target != NULL &&
+               target->id != closest_id) { // busquem fins trobar el carrer amb
+                                           // el mateix ID que el mes proper
+          target = target->next; // pasem al seguent carrer de la llista
         }
-        if (target != NULL){  //si hem trobat les ddades del carrer mes proper mostrem el nom del carrer i les 2 interseccions
-          printf("\nClosests street segment: %s (ID: %lld)\n", target->name, target->id);
-          printf("Between intersections: %lld and %lld\n", target->node1, target->node2);
+        if (target != NULL) { // si hem trobat les ddades del carrer mes proper
+                              // mostrem el nom del carrer i les 2 interseccions
+          printf("\nClosests street segment: %s (ID: %lld)\n", target->name,
+                 target->id);
+          printf("Between intersections: %lld and %lld\n", target->node1,
+                 target->node2);
 
           printf("\nConnected street segments:\n");
-          edge *conn = street_list; //tornem al principi de la llista per buscar connexions
+          edge *conn = street_list; // tornem al principi de la llista per
+                                    // buscar connexions
           int found_connections = 0;
-          while (conn !=NULL){  //mirem tots els carrers del mapa
-            if (conn->id != target->id){  //un carrer esta connectat sempre que no sigui ell mateix
-              if (conn->node1 == target->node1 || conn->node1 == target->node2 || //i si comparteix algun dels 2 nodes
-              conn->node2 == target->node1 || conn->node2 == target->node2){
-                long long common_node = (conn->node1 == target->node1 || conn->node1 == target->node2)?conn->node1 : conn->node2; //mirem el punt exacte on es toquen esl 2 carres
-                printf("- %s (ID:  %lld) connects at Node %lld\n", conn->name, conn->id, common_node);
-                found_connections++;  //sumem 1 al contador de connexions trobades
+          while (conn != NULL) {          // mirem tots els carrers del mapa
+            if (conn->id != target->id) { // un carrer esta connectat sempre que
+                                          // no sigui ell mateix
+              if (conn->node1 == target->node1 ||
+                  conn->node1 ==
+                      target->node2 || // i si comparteix algun dels 2 nodes
+                  conn->node2 == target->node1 ||
+                  conn->node2 == target->node2) {
+                long long common_node =
+                    (conn->node1 == target->node1 ||
+                     conn->node1 == target->node2)
+                        ? conn->node1
+                        : conn->node2; // mirem el punt exacte on es toquen esl
+                                       // 2 carres
+                printf("- %s (ID:  %lld) connects at Node %lld\n", conn->name,
+                       conn->id, common_node);
+                found_connections++; // sumem 1 al contador de connexions
+                                     // trobades
               }
             }
-            conn = conn->next;  //pasem a revisar el seguent carrer de la llista
+            conn = conn->next; // pasem a revisar el seguent carrer de la llista
           }
-          if (found_connections == 0){
+          if (found_connections == 0) {
             printf("No connected segments found.\n");
           }
         }
@@ -307,11 +329,10 @@ int main() {
       }
     }
   }
-  
 
   free_houses(list);       // retornem la memoria de les cases a l'ordinador
   free_places(place_list); // retornem la memoria dels llocs a l'ordinador
-  free_edges(street_list);  // retornem la memoria dels carrers a l'ordinador
+  free_edges(street_list); // retornem la memoria dels carrers a l'ordinador
 
   return 0;
 }

@@ -9,8 +9,7 @@
 #define M_PI 3.14159265358979323846
 #endif
 
-
-typedef struct position{
+typedef struct position {
   double lat;
   double lon;
 } Position;
@@ -30,23 +29,23 @@ typedef struct place {
   struct place *next; // punter al seguent lloc de la llista
 } place;
 
-typedef struct node{
+typedef struct node {
   int id;
   double lat;
   double lon;
   struct node *next;
 } node;
 
-typedef struct edge{
-  long long  id; //identificador del segment
-  long long node1;  //id de la cantonada inicial
-  double lat1;  //cooredenades inicials
-  double lon1;  
-  long long node2;  //id de la cantonada final
-  double lat2;  //coordenades finals
-  double lon2;  
+typedef struct edge {
+  long long id;    // identificador del segment
+  long long node1; // id de la cantonada inicial
+  double lat1;     // cooredenades inicials
+  double lon1;
+  long long node2; // id de la cantonada final
+  double lat2;     // coordenades finals
+  double lon2;
   double length;
-  char name[MAX_STR]; //nomd el carrer
+  char name[MAX_STR]; // nomd el carrer
   struct edge *next;
 } edge;
 
@@ -66,7 +65,7 @@ void free_nodes(node *head);
 void free_edges(edge *head);
 
 double toRadians(double degree);
-double toDegrees( double radians);
+double toDegrees(double radians);
 double haversine(Position posA, Position posB);
 Position midpoint(Position a, Position b);
 long long get_closest_street(edge *list, double u_lat, double u_lon);
