@@ -12,6 +12,7 @@ int main() {
                       // nostre programa
   unit_test_places(); // cridem a la prova abans d'executar el
                       // nostre programa
+  unit_test_streets();
   char map_name[MAX_STR];
   char input_type[MAX_STR];
   int valid = 0; // 0 vol dir Fals (no vàlid), 1 vol dir Cert (vàlid)

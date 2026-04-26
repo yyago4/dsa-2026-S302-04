@@ -69,5 +69,6 @@ double toDegrees(double radians);
 double haversine(Position posA, Position posB);
 Position midpoint(Position a, Position b);
 long long get_closest_street(edge *list, double u_lat, double u_lon);
+void unit_test_streets();
 
 #endif
