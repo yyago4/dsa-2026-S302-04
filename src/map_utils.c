@@ -190,6 +190,7 @@ edge *get_map_streets(char *map_name) {
   edge *tail = NULL;      // punter a l'ultim element de la llista
   char line[MAX_STR * 2]; // espai per poder guardar temporalment cada linea que
                           // hem llegit
+  long long edge_id=0; // hacemos un contador para asignar correctamente los id de los nodos
   while (fgets(line, sizeof(line), f)) {
     edge *new_e = (edge *)malloc(
         sizeof(edge)); // reservem memoria ram per a una fitxa nova
@@ -256,6 +257,8 @@ edge *get_map_streets(char *map_name) {
       continue;
     }
     strcpy(new_e->name, token); // copiem el nom de carrer dins de la fitxa
+
+    new_e->id=edge_id++; //asignamos el id correspondiente
 
     new_e->next = NULL; // com aquest sera l'ultima de la llista, seguidament ja
                         // no hi ha cap altre carrrer
