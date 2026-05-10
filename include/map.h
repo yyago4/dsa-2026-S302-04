@@ -51,12 +51,12 @@ typedef struct edge {
   struct edge *next;
 } edge;
 
-typedef struct street_node{
+typedef struct street_node {
   edge *street_segment;
   struct street_node *next;
 } street_node;
 
-typedef struct hash_entry{
+typedef struct hash_entry {
   long long node_id;
   street_node *streets;
   struct hash_entry *next;
@@ -83,9 +83,10 @@ Position midpoint(Position a, Position b);
 long long get_closest_street(edge *list, double u_lat, double u_lon);
 void unit_test_streets();
 
-int hash_function( long long node_id);
-void add_street_to_node(hash_entry **hash_table, long long node_id, edge *segment);
-hash_entry** build_street_graph(edge *street_list);
+int hash_function(long long node_id);
+void add_street_to_node(hash_entry **hash_table, long long node_id,
+                        edge *segment);
+hash_entry **build_street_graph(edge *street_list);
 void free_hash_map(hash_entry **hash_table);
 
 #endif
