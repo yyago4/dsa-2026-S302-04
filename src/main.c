@@ -12,6 +12,7 @@ int main() {
                       // nostre programa
   unit_test_places(); // cridem a la prova abans d'executar el
                       // nostre programa
+  unit_test_streets();
   char map_name[MAX_STR];
   char input_type[MAX_STR];
   int valid = 0; // 0 vol dir Fals (no vàlid), 1 vol dir Cert (vàlid)
@@ -55,6 +56,8 @@ int main() {
          "place)?\n");
   scanf("%149s", input_type);
 
+  hash_entry **street_hash = build_street_graph(street_list); //organitzem els carrers en calaixos segons la seva cruilla
+
   // Comprovem si ha triat "coordinate", "place" o "address"
   if (strcmp(input_type, "coordinate") == 0) {
     double u_lat;
@@ -86,7 +89,7 @@ int main() {
                  target->node2);
 
           printf("\nConnected street segments:\n");
-          edge *conn = street_list; // tornem al principi de la llista per
+          /*edge *conn = street_list; // tornem al principi de la llista per
                                     // buscar connexions
           int found_connections = 0;
           while (conn != NULL) {          // mirem tots els carrers del mapa
@@ -112,6 +115,31 @@ int main() {
             conn = conn->next; // pasem a revisar el seguent carrer de la llista
           }
           if (found_connections == 0) {
+            printf("No connected segments found.\n");
+          }*/
+          long long nodes_to_check[2] = {target->node1, target->node2}; //apuntem als 2 extresm del carrer on estem
+          int found_any = 0;  //marcasdor per saber si trobe algun carrer connectat
+
+          for(int i = 0; i<2; ++i){ //revisem tots 2 extrems
+            int idx = hash_function(nodes_to_check[i]); //calculem a quin calaix de la taula hem de mirar
+            hash_entry *entry = street_hash[idx]; //busquem el continfut d'aquell calaix
+
+            while (entry !=NULL){
+              if (entry->node_id == nodes_to_check[i]){
+                street_node *s_curr =entry->streets;
+                while(s_curr != NULL){  //mirem tots els carrers de la cruilla
+                  if(s_curr->street_segment->id != target->id){
+                    printf("- %s (id: %lld) connects at Node %lld\n", s_curr->street_segment->name, s_curr->street_segment->id,
+                    nodes_to_check[i]); // si el carrer no es el mateix on ja estem, mostrem el carrer que hi ha connectat
+                    found_any = 1;  //marquem que hem trobat una connexio
+                  }
+                  s_curr =s_curr->next; //mirem el seguent carrer de la llista del calaix
+                }
+              }
+              entry =entry->next; //revisem si hi ha un altre cruilla al mateix calaix
+            }
+          }
+          if (!found_any){  //avisem si la taula estava buida en aquells calaixos
             printf("No connected segments found.\n");
           }
         }
@@ -333,6 +361,7 @@ int main() {
   free_houses(list);       // retornem la memoria de les cases a l'ordinador
   free_places(place_list); // retornem la memoria dels llocs a l'ordinador
   free_edges(street_list); // retornem la memoria dels carrers a l'ordinador
+  free_hash_map(street_hash);
 
   return 0;
 }
