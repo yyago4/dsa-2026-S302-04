@@ -623,7 +623,7 @@ void add_street_to_node(hash_entry **hash_table, long long node_id,
   if (entry == NULL) {
     entry = malloc(sizeof(hash_entry)); // demanem espai nou per poder crear la
                                         // seccio de la cruilla
-    entry->node_id = node_id; // apuntem el numero de la cruilla
+    entry->node_id = node_id;           // apuntem el numero de la cruilla
     entry->streets =
         NULL; // suposem que inicialment la llista de carreres esta buida
     entry->next = hash_table[index]; // si ja hi havia altres cruilles al
