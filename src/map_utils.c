@@ -190,7 +190,12 @@ edge *get_map_streets(char *map_name) {
   edge *tail = NULL;      // punter a l'ultim element de la llista
   char line[MAX_STR * 2]; // espai per poder guardar temporalment cada linea que
                           // hem llegit
+<<<<<<< HEAD
   long long edge_id=0; // hacemos un contador para asignar correctamente los id de los nodos
+=======
+  long long edge_id =
+      0; // hacemos un contador para asignar correctamente los id de los nodos
+>>>>>>> 52ef2efcfdcd6dad7f13eb550b78cbeafd0021e1
   while (fgets(line, sizeof(line), f)) {
     edge *new_e = (edge *)malloc(
         sizeof(edge)); // reservem memoria ram per a una fitxa nova
@@ -258,7 +263,11 @@ edge *get_map_streets(char *map_name) {
     }
     strcpy(new_e->name, token); // copiem el nom de carrer dins de la fitxa
 
+<<<<<<< HEAD
     new_e->id=edge_id++; //asignamos el id correspondiente
+=======
+    new_e->id = edge_id++; // asignamos el id correspondiente
+>>>>>>> 52ef2efcfdcd6dad7f13eb550b78cbeafd0021e1
 
     new_e->next = NULL; // com aquest sera l'ultima de la llista, seguidament ja
                         // no hi ha cap altre carrrer
@@ -534,6 +543,7 @@ void free_edges(edge *head) {
   }
 }
 
+<<<<<<< HEAD
 void unit_test_streets(){
   printf("Starting streets security test\n");
   //creamos manualmente dos segmentos de calles 
@@ -555,10 +565,34 @@ void unit_test_streets(){
 
   edge *e2=malloc(sizeof(edge));
   if(e2==NULL){
+=======
+void unit_test_streets() {
+  printf("Starting streets security test\n");
+  // creamos manualmente dos segmentos de calles
+  edge *e1 = malloc(sizeof(edge));
+  if (e1 == NULL) {
+    printf("Error: Out of memory!\n");
+    return;
+  }
+  e1->id = 0;
+  e1->node1 = 100;
+  e1->lat1 = 41.40;
+  e1->lon1 = 2.19;
+  e1->node2 = 200;
+  e1->lat2 = 41.41;
+  e1->lon2 = 2.20;
+  e1->length = 150.0;
+  strcpy(e1->name, "Street Test A");
+  e1->next = NULL;
+
+  edge *e2 = malloc(sizeof(edge));
+  if (e2 == NULL) {
+>>>>>>> 52ef2efcfdcd6dad7f13eb550b78cbeafd0021e1
     printf("Error: Out of memory!\n");
     free(e1);
     return;
   }
+<<<<<<< HEAD
   e2->id=1;
   e2->node1=200;
   e2->lat1=41.41;
@@ -590,4 +624,122 @@ void unit_test_streets(){
     free(tmp);
   }
   printf("Street unit test completed successfully\n\n");
+=======
+  e2->id = 1;
+  e2->node1 = 200;
+  e2->lat1 = 41.41;
+  e2->lon1 = 2.20;
+  e2->node2 = 300;
+  e2->lat2 = 41.42;
+  e2->lon2 = 2.21;
+  e2->length = 200.0;
+  strcpy(e2->name, "Street Test B");
+  e2->next = NULL;
+
+  e1->next = e2; // enlazamos los elementos para hacer lista enlazada
+  // comprobamos que los campos esta correctamente guardados y el node2 de e1
+  // coincide con el node1 del e2 (estan conectados)
+  if (e1->node1 == 100 && strcmp(e1->name, "Street Test A") == 0 &&
+      e1->node2 == e2->node1) {
+    printf("Streets linked list is created successfully\n");
+  } else {
+    printf("ERROR:Street information is corrupted\n");
+  }
+  // comprobamos que get_closest_street encuetra el segmento mas cercano
+  // correctamente
+  //: el pt (41.415,2.205) esta mas cerca de la mitad de el e2 que de la del e1
+  long long closest = get_closest_street(e1, 41.415, 2.205);
+  if (closest == e2->id) {
+    printf("Closest street detection works correctly\n");
+  } else {
+    printf("ERROR: Closest street detection failed\n");
+  }
+
+  // libermos la memoria
+  edge *curr = e1;
+  while (curr != NULL) {
+    edge *tmp = curr;
+    curr = curr->next;
+    free(tmp);
+  }
+  printf("Street unit test completed successfully\n\n");
+}
+
+int hash_function(long long node_id) {
+  return (int)(node_id %
+               HASH_SIZE); // agafem el num de la cruilla i calculem el residu
+                           // de dividirho pero 10000, q sera el nostre calaix
+}
+
+void add_street_to_node(hash_entry **hash_table, long long node_id,
+                        edge *segment) {
+  int index =
+      hash_function(node_id); // mirem quin num de calaix li toca a la cruilla
+
+  hash_entry *entry = hash_table[index];
+  while (entry != NULL) {
+    if (entry->node_id == node_id) { // si tenim la mateixa seccio que el num de
+                                     // cruilla, parem de buscar
+      break;
+    }
+    entry = entry->next; // mirem la seguent seccio del calaix
+  }
+
+  if (entry == NULL) {
+    entry = malloc(sizeof(hash_entry)); // demanem espai nou per poder crear la
+                                        // seccio de la cruilla
+    entry->node_id = node_id;           // apuntem el numero de la cruilla
+    entry->streets =
+        NULL; // suposem que inicialment la llista de carreres esta buida
+    entry->next = hash_table[index]; // si ja hi havia altres cruilles al
+                                     // calaix, les posem al darrere
+    hash_table[index] =
+        entry; // posem aquesta nova seccio al principi del calaix
+  }
+  street_node *new_s_node =
+      malloc(sizeof(street_node));      // creem una fitza per al carrer
+  new_s_node->street_segment = segment; // apuntem quin carrer es
+  new_s_node->next =
+      entry->streets; // afegim els carrers que ja teniem abans d'aquest
+  entry->streets = new_s_node; // aquest carrer pasa a ser el primer de la
+                               // llista d'aquesta cruilla
+}
+
+hash_entry **build_street_graph(edge *street_list) {
+  hash_entry **hash_table =
+      calloc(HASH_SIZE,
+             sizeof(hash_entry *)); // creem una taula amb 10000 calaixo buits
+
+  edge *curr =
+      street_list; // començem per primer carrer de la llista desordenada
+  while (curr != NULL) {
+    add_street_to_node(hash_table, curr->node1,
+                       curr); // afegim al calaix de la cruilla del inici
+    add_street_to_node(hash_table, curr->node2,
+                       curr); // afegim el calai de la cruilla del final
+    curr = curr->next;        // pasem al seguent carrer de la llista
+  }
+  return hash_table; // retornem la taula ja organitzada
+}
+void free_hash_map(hash_entry **hash_table) {
+  if (hash_table == NULL) { // si la taula no existeix, no cal fer res
+    return;
+  }
+  for (int i = 0; i < HASH_SIZE; ++i) { // revisem els 10000 calaixos
+    hash_entry *entry = hash_table[i];
+    while (entry != NULL) {
+      hash_entry *tmp_entry = entry; // guardem la seccio actual
+
+      street_node *s_node = entry->streets;
+      while (s_node != NULL) {
+        street_node *tmp_s = s_node; // guardem la fitxa del carrer actual
+        s_node = s_node->next;       // mirem quina es la seguent fitxa
+        free(tmp_s);
+      }
+      entry = entry->next; // pasem a la seguent cruilla del calaix
+      free(tmp_entry);     // esborrem la seccio de la cruilla ja buida
+    }
+  }
+  free(hash_table);
+>>>>>>> 52ef2efcfdcd6dad7f13eb550b78cbeafd0021e1
 }

@@ -9,6 +9,8 @@
 #define M_PI 3.14159265358979323846
 #endif
 
+#define HASH_SIZE 10000
+
 typedef struct position {
   double lat;
   double lon;
@@ -49,6 +51,17 @@ typedef struct edge {
   struct edge *next;
 } edge;
 
+typedef struct street_node {
+  edge *street_segment;
+  struct street_node *next;
+} street_node;
+
+typedef struct hash_entry {
+  long long node_id;
+  street_node *streets;
+  struct hash_entry *next;
+} hash_entry;
+
 void unit_test_houses();
 void unit_test_places();
 place *get_map_places(char *map_name);
@@ -60,7 +73,6 @@ int livenstein(const char *s1, const char *s2);
 int min3(int a, int b, int c);
 void free_houses(house *head);
 void free_places(place *head);
-edge *get_mep_streets(char *map_name);
 void free_nodes(node *head);
 void free_edges(edge *head);
 
@@ -70,5 +82,14 @@ double haversine(Position posA, Position posB);
 Position midpoint(Position a, Position b);
 long long get_closest_street(edge *list, double u_lat, double u_lon);
 void unit_test_streets();
+<<<<<<< HEAD
+=======
+
+int hash_function(long long node_id);
+void add_street_to_node(hash_entry **hash_table, long long node_id,
+                        edge *segment);
+hash_entry **build_street_graph(edge *street_list);
+void free_hash_map(hash_entry **hash_table);
+>>>>>>> 52ef2efcfdcd6dad7f13eb550b78cbeafd0021e1
 
 #endif
