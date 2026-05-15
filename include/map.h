@@ -82,14 +82,11 @@ double haversine(Position posA, Position posB);
 Position midpoint(Position a, Position b);
 long long get_closest_street(edge *list, double u_lat, double u_lon);
 void unit_test_streets();
-<<<<<<< HEAD
-=======
 
 int hash_function(long long node_id);
 void add_street_to_node(hash_entry **hash_table, long long node_id,
                         edge *segment);
 hash_entry **build_street_graph(edge *street_list);
 void free_hash_map(hash_entry **hash_table);
->>>>>>> 52ef2efcfdcd6dad7f13eb550b78cbeafd0021e1
 
 #endif
