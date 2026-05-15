@@ -51,32 +51,32 @@ typedef struct edge {
   struct edge *next;
 } edge;
 
-typedef struct street_node{
+typedef struct street_node {
   edge *street_segment;
   struct street_node *next;
 } street_node;
 
-typedef struct hash_entry{
+typedef struct hash_entry {
   long long node_id;
   street_node *streets;
   struct hash_entry *next;
 } hash_entry;
 
-typedef struct path{
+typedef struct path {
   long long node_id;
   edge *edge_taken;
   struct path *parent;
 } Path;
 
-typedef struct queue_node{
+typedef struct queue_node {
   Path *path_data;
   struct queue_node *next;
 } queue_node;
 
-typedef struct queue{
-  queue_node *front; 
-  queue_node *rear; 
-} Queue;  
+typedef struct queue {
+  queue_node *front;
+  queue_node *rear;
+} Queue;
 
 void unit_test_houses();
 void unit_test_places();
@@ -99,12 +99,13 @@ Position midpoint(Position a, Position b);
 long long get_closest_street(edge *list, double u_lat, double u_lon);
 void unit_test_streets();
 
-int hash_function( long long node_id);
-void add_street_to_node(hash_entry **hash_table, long long node_id, edge *segment);
-hash_entry** build_street_graph(edge *street_list);
+int hash_function(long long node_id);
+void add_street_to_node(hash_entry **hash_table, long long node_id,
+                        edge *segment);
+hash_entry **build_street_graph(edge *street_list);
 void free_hash_map(hash_entry **hash_table);
 
-Path* compute_bfs(hash_entry **graph, long long start_node, long long end_node);
+Path *compute_bfs(hash_entry **graph, long long start_node, long long end_node);
 void print_route(Path *finish_path);
 void free_queue(Queue *q);
 

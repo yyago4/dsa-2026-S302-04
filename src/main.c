@@ -17,8 +17,8 @@ int main() {
   char input_type[MAX_STR];
   int valid = 0; // 0 vol dir Fals (no vàlid), 1 vol dir Cert (vàlid)
 
-  long long start_node = -1;  //variable per guardar el node on comencem la ruta
-  long long end_node = -1;  //variable per guardar el node on volem arribar
+  long long start_node = -1; // variable per guardar el node on comencem la ruta
+  long long end_node = -1;   // variable per guardar el node on volem arribar
 
   // Validació del mapa
   while (valid == 0) {
@@ -58,24 +58,25 @@ int main() {
   hash_entry **street_hash = build_street_graph(
       street_list); // organitzem els carrers en calaixos segons la seva cruilla
 
-  for(int step = 0; step<2;step++){
-    if(step == 0){
+  for (int step = 0; step < 2; step++) {
+    if (step == 0) {
       printf("\n --- ORIGIN ---\n");
-    } else{
+    } else {
       printf("\n--- DESTINATION ---\n");
     }
-    printf("How do you want to input your position (address, coordinate or place)?\n");
+    printf("How do you want to input your position (address, coordinate or "
+           "place)?\n");
     scanf("%149s", input_type);
 
-    long long current_node = -1;  //node temporal per aquesta volta
+    long long current_node = -1; // node temporal per aquesta volta
 
     // Comprovem si ha triat "coordinate", "place" o "address"
-    if (strcmp(input_type, "coordinate") == 0) {  
+    if (strcmp(input_type, "coordinate") == 0) {
       double u_lat;
       double u_lon;
       if (scanf("%lf %lf", &u_lat, &u_lon) !=
           2) { // llegim els 2 numeros posats per l'usuari, si no son numeros
-              // printeja
+               // printeja
         printf("Invalid coordinates.\n");
       } else {
         long long closest_id = get_closest_street(
@@ -85,27 +86,30 @@ int main() {
         if (closest_id == -1) {
           printf("No streets found.\n"); // si no trobem cap carrer avisem
         } else {
-          edge *target =
-              street_list; // comencem a mirar la llista de carrers des de l'inici
+          edge *target = street_list; // comencem a mirar la llista de carrers
+                                      // des de l'inici
           while (target != NULL &&
-                target->id != closest_id) { // busquem fins trobar el carrer amb
-                                            // el mateix ID que el mes proper
+                 target->id !=
+                     closest_id) { // busquem fins trobar el carrer amb
+                                   // el mateix ID que el mes proper
             target = target->next; // pasem al seguent carrer de la llista
           }
-          if (target != NULL) { // si hem trobat les ddades del carrer mes proper
-                                // mostrem el nom del carrer i les 2 interseccions
-            current_node = target->node1; //guardem el node per a la ruta
+          if (target !=
+              NULL) { // si hem trobat les ddades del carrer mes proper
+                      // mostrem el nom del carrer i les 2 interseccions
+            current_node = target->node1; // guardem el node per a la ruta
             printf("\nClosests street segment: %s (ID: %lld)\n", target->name,
-                  target->id);
+                   target->id);
             printf("Between intersections: %lld and %lld\n", target->node1,
-                  target->node2);
+                   target->node2);
 
             printf("\nConnected street segments:\n");
             /*edge *conn = street_list; // tornem al principi de la llista per
                                       // buscar connexions
             int found_connections = 0;
             while (conn != NULL) {          // mirem tots els carrers del mapa
-              if (conn->id != target->id) { // un carrer esta connectat sempre que
+              if (conn->id != target->id) { // un carrer esta connectat sempre
+            que
                                             // no sigui ell mateix
                 if (conn->node1 == target->node1 ||
                     conn->node1 ==
@@ -116,7 +120,8 @@ int main() {
                       (conn->node1 == target->node1 ||
                       conn->node1 == target->node2)
                           ? conn->node1
-                          : conn->node2; // mirem el punt exacte on es toquen esl
+                          : conn->node2; // mirem el punt exacte on es toquen
+            esl
                                         // 2 carres
                   printf("- %s (ID:  %lld) connects at Node %lld\n", conn->name,
                         conn->id, common_node);
@@ -124,7 +129,8 @@ int main() {
                                       // trobades
                 }
               }
-              conn = conn->next; // pasem a revisar el seguent carrer de la llista
+              conn = conn->next; // pasem a revisar el seguent carrer de la
+            llista
             }
             if (found_connections == 0) {
               printf("No connected segments found.\n");
@@ -145,22 +151,23 @@ int main() {
               while (entry != NULL) {
                 if (entry->node_id == nodes_to_check[i]) {
                   street_node *s_curr = entry->streets;
-                  while (s_curr != NULL) { // mirem tots els carrers de la cruilla
+                  while (s_curr !=
+                         NULL) { // mirem tots els carrers de la cruilla
                     if (s_curr->street_segment->id != target->id) {
                       printf("- %s (id: %lld) connects at Node %lld\n",
-                            s_curr->street_segment->name,
-                            s_curr->street_segment->id,
-                            nodes_to_check[i]); // si el carrer no es el mateix
-                                                // on ja estem, mostrem el carrer
-                                                // que hi ha connectat
+                             s_curr->street_segment->name,
+                             s_curr->street_segment->id,
+                             nodes_to_check[i]); // si el carrer no es el mateix
+                                                 // on ja estem, mostrem el
+                                                 // carrer que hi ha connectat
                       found_any = 1; // marquem que hem trobat una connexio
                     }
-                    s_curr = s_curr->next; // mirem el seguent carrer de la llista
-                                          // del calaix
+                    s_curr = s_curr->next; // mirem el seguent carrer de la
+                                           // llista del calaix
                   }
                 }
                 entry = entry->next; // revisem si hi ha un altre cruilla al
-                                    // mateix calaix
+                                     // mateix calaix
               }
             }
             if (!found_any) { // avisem si la taula estava buida en aquells
@@ -173,8 +180,8 @@ int main() {
     }
 
     else if (strcmp(input_type, "place") == 0) {
-      char search_place[MAX_STR]; // creem espai per a guardar el nom que escrigui
-                                  // l'usuari
+      char search_place[MAX_STR]; // creem espai per a guardar el nom que
+                                  // escrigui l'usuari
 
       printf("Enter a place name: ");
       scanf(" %[^\n]", search_place); // lleguim tota la frese que escrigui
@@ -201,7 +208,7 @@ int main() {
           printf("Multiple places found. Please choose one:\n");
           for (int i = 0; i < match_count; i++) {
             printf("%d: %s at (%.6f, %.6f)\n", i + 1, matches[i]->name,
-                  matches[i]->lat, matches[i]->lon);
+                   matches[i]->lat, matches[i]->lon);
           }
           printf("Choice: ");
           if (scanf("%d", &choice) != 1 || choice < 1 || choice > match_count) {
@@ -211,14 +218,17 @@ int main() {
           choice = 1; // si només n'hi ha un, l'agafem directament
         }
         printf("\n    Found at (%.6f, %.6f)\n", matches[choice - 1]->lat,
-              matches[choice - 1]->lon);
+               matches[choice - 1]->lon);
 
-        long long cl_id = get_closest_street(street_list, matches[choice -1]->lat, matches[choice -1]->lon);  //busquem el carrer + proper al punt que hem trobat
-        edge *t =street_list;
-        while (t && t->id != cl_id){  //busquem la fitxa d'aquest carrer
+        long long cl_id = get_closest_street(
+            street_list, matches[choice - 1]->lat,
+            matches[choice - 1]
+                ->lon); // busquem el carrer + proper al punt que hem trobat
+        edge *t = street_list;
+        while (t && t->id != cl_id) { // busquem la fitxa d'aquest carrer
           t = t->next;
         }
-        if (t){ //guardem el numero de la cruilla per al GPS
+        if (t) { // guardem el numero de la cruilla per al GPS
           current_node = t->node1;
         }
       }
@@ -226,24 +236,25 @@ int main() {
       if (!found_p) { // si la cerca exacta ha fallat, foun_p = 0
         printf("Place not know. Did you mean: \n"); // avisem que ara buscarem
                                                     // similars
-        char best_names[5][MAX_STR]; // creamos matriz para guardar los 5 nombres
-                                    // del top
-        int best_dist[5] = {999, 999, 999, 999,
-                            999}; // inicializamos los valores del top en valores
-                                  // altos ya que buscamos los mas pequeños
+        char best_names[5][MAX_STR]; // creamos matriz para guardar los 5
+                                     // nombres del top
+        int best_dist[5] = {
+            999, 999, 999, 999,
+            999}; // inicializamos los valores del top en valores
+                  // altos ya que buscamos los mas pequeños
         curr_p =
             place_list; // tonem a començar des de l'inici de la llista de llocs
         int sug_count =
             0; // contador per nomes mostrar certa quantitat de sugeriments
 
         while (curr_p != NULL) { // sequential serching desde el rpincipio hasta
-                                // el final de la lista
+                                 // el final de la lista
           int dist = livenstein(search_place, curr_p->name);
           for (int i = 0; i < 5; i++) {
             if (dist < best_dist[i]) { // si el sitio actual es mejor que el del
-                                      // top en posicion i
+                                       // top en posicion i
               for (int j = 4; j > i;
-                  j--) { // movemos todos los de abajo una posicion abajo
+                   j--) { // movemos todos los de abajo una posicion abajo
                 best_dist[j] = best_dist[j - 1];
                 strcpy(best_names[j], best_names[j - 1]);
               }
@@ -257,7 +268,8 @@ int main() {
           }
           curr_p = curr_p->next;
         }
-        if (sug_count == 0) { // si no hemos encontrado ningun parecido lo desimos
+        if (sug_count ==
+            0) { // si no hemos encontrado ningun parecido lo desimos
           printf("No similar places found\n");
         } else { // imprimimos el top de parecidos
           printf("El top:\n");
@@ -273,8 +285,8 @@ int main() {
       int address_number;    // espai per al numero
 
       printf("Enter a street name (e.g. Carrer de Roc Boronat).\n");
-      scanf(" %149[^\n]", address); // llegim el carrer fins que trobi un salt de
-                                    // linea ( incloent si te espais)
+      scanf(" %149[^\n]", address); // llegim el carrer fins que trobi un salt
+                                    // de linea ( incloent si te espais)
       printf("Enter a house number (e.g. 138).\n");
       if (scanf("%d", &address_number) !=
           1) { // comprovem que hagi escrit un numero
@@ -292,13 +304,13 @@ int main() {
       int found = 0; // varibale per saber si hem trobat la casa
       int street_exists =
           0; // variable para saber si es el numero que no existe dentro de una
-            // calle real, o porque la calle no existe
+             // calle real, o porque la calle no existe
       house *current = list; // comencem a busacr desde el principi de la llista
 
       while (current !=
-            NULL) { // mirem casa per casa fins arribar al final de la llista
+             NULL) { // mirem casa per casa fins arribar al final de la llista
         char current_street_norm[MAX_STR]; // fem espai per poder normalitzar el
-                                          // carrer de la llista
+                                           // carrer de la llista
         strcpy(current_street_norm, current->street);
         normalize_street(
             current_street_norm); // normaliztem el carrer de la llista
@@ -308,27 +320,31 @@ int main() {
           street_exists = 1;
           if (current->num == address_number) { // si el numero tambe coincideix
             printf("\n    Found at (%.6f, %.6f)\n", current->lat,
-                  current->lon); // printejem el resultat
+                   current->lon); // printejem el resultat
             found = 1;            // marquem que l0hem trobat
 
-            long long cl_id = get_closest_street(street_list, current->lat, current->lon);  //busquem el carrer + proper al punt que hem trobat
+            long long cl_id = get_closest_street(
+                street_list, current->lat,
+                current
+                    ->lon); // busquem el carrer + proper al punt que hem trobat
             edge *t = street_list;
-            while (t && t->id != cl_id){  //busquem la fitxa d'aquest carrer
+            while (t && t->id != cl_id) { // busquem la fitxa d'aquest carrer
               t = t->next;
             }
-            if (t){ //guardem el numero de la cruilla per al GPS
-              current_node =t->node1;
+            if (t) { // guardem el numero de la cruilla per al GPS
+              current_node = t->node1;
             }
-            break;                // sortim del bucle ara queja l'hem trobat
+            break; // sortim del bucle ara queja l'hem trobat
           }
         }
         current = current->next; // pasem a la seguent casa
       }
       if (!found) {          // si hem mirat totes i no hem trobat res
-        if (street_exists) { // caso en que la calle es correcta pero el numero no
+        if (street_exists) { // caso en que la calle es correcta pero el numero
+                             // no
           printf("Street found but number %d is invalid. Please choose a valid "
-                "number:\n",
-                address_number);
+                 "number:\n",
+                 address_number);
           current =
               list; // posicionamos al principio de la lista de todas las casas
           while (current != NULL) {
@@ -337,20 +353,19 @@ int main() {
             normalize_street(csn);
             if (strcmp(csn, search_norm) ==
                 0) { // miramos si scn(calle actual normalizada) y
-                    // serach_norm(calle buscada normalizada) son las mismas
+                     // serach_norm(calle buscada normalizada) son las mismas
               printf("-%d\n",
-                    current->num); // imprimimos la dirrecion para el usuario
+                     current->num); // imprimimos la dirrecion para el usuario
             }
-            current =
-                current
-                    ->next; // recorremos toda la lista(lista de todas las casas
-                            // del mapa) para ver las coincidencias de las calles
+            current = current->next; // recorremos toda la lista(lista de todas
+                                     // las casas del mapa) para ver las
+                                     // coincidencias de las calles
           }
         } else { // caso que la calle no se sepa
           printf("Street not known. Did you mean one of these?\n");
           current = list;
           char best_streets[5][MAX_STR]; // hacemos matriz para guardar las 5
-                                        // sugerencias
+                                         // sugerencias
           int sug_count = 0;             // contador de sugerencias
           int best_dist[5] = {
               999, 999, 999, 999,
@@ -366,19 +381,19 @@ int main() {
                 0; // auxiliar para ver si la calle ya esta en la lista
 
             for (int i = 0; i < sug_count;
-                i++) { // la primera iteracion se lo salta ya que es la primera
+                 i++) { // la primera iteracion se lo salta ya que es la primera
                         // calle y si o si no esta en la lista
               if (strcmp(best_streets[i], current->street) == 0) {
                 already_in = 1;
               }
             }
             if (!already_in) { // si la calle es nueva probamos de meterla en el
-                              // top
+                               // top
               for (int i = 0; i < 5; i++) {
                 if (dist < best_dist[i]) { // si la calle actual es mejor
-                                          // que la del top en posicion i
+                                           // que la del top en posicion i
                   for (int j = 4; j > i;
-                      j--) { // movemos todos los de abajo una posicion abajo
+                       j--) { // movemos todos los de abajo una posicion abajo
                     best_dist[j] = best_dist[j - 1];
                     strcpy(best_streets[j], best_streets[j - 1]);
                   }
@@ -395,24 +410,25 @@ int main() {
           }
           for (int i = 0; i < sug_count; i++) {
             printf("%d: %s (Coincidencias: %d)\n", i + 1, best_streets[i],
-                  best_dist[i]); // imprimimos el top para el usuario
+                   best_dist[i]); // imprimimos el top para el usuario
           }
         }
       }
     }
-    if (step == 0){
+    if (step == 0) {
       start_node = current_node;
-    }else{
-      end_node =current_node;
+    } else {
+      end_node = current_node;
     }
   }
-  if (start_node != -1 && end_node != -1){
+  if (start_node != -1 && end_node != 1) {
     printf("\n--- ROUTE ---\n");
-    Path *route =compute_bfs(street_hash, start_node, end_node);  // Busca el camí
-    if (route){ // Imprimeix els carrers un per un
+    Path *route =
+        compute_bfs(street_hash, start_node, end_node); // Busca el camí
+    if (route) {
       print_route(route);
       printf("You have arrived at your destination!\n");
-    } else{
+    } else {
       printf("No path found between thes points.\n");
     }
   }
