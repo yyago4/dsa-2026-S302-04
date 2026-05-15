@@ -693,12 +693,6 @@ void enqueue(Queue *q, Path *path_data) {
   q->rear = new_node; // actualitzem el punter final perque apunti al nou bloc
 }
 
-void free_queue(Queue *q) {
-  while (q->front != NULL) {
-    dequeue(q);
-  }
-}
-
 Path *dequeue(Queue *q) {
   if (q->front == NULL) {
     return NULL;
@@ -791,6 +785,12 @@ Path *compute_bfs(hash_entry **graph, long long start_node,
     }
   }
   return NULL;
+}
+
+void free_queue(Queue *q) {
+  while (q->front != NULL) {
+    dequeue(q);
+  }
 }
 
 void print_route(Path *finish_path) {
