@@ -421,7 +421,7 @@ int main() {
       end_node = current_node;
     }
   }
-  if (start_node != -1 && end_node != 1) {
+  if (start_node != -1 && end_node != -1) {
     printf("\n--- ROUTE ---\n");
     Path *route =
         compute_bfs(street_hash, start_node, end_node); // Busca el camí
