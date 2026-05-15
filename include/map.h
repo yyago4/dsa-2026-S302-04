@@ -62,6 +62,22 @@ typedef struct hash_entry {
   struct hash_entry *next;
 } hash_entry;
 
+typedef struct path {
+  long long node_id;
+  edge *edge_taken;
+  struct path *parent;
+} Path;
+
+typedef struct queue_node {
+  Path *path_data;
+  struct queue_node *next;
+} queue_node;
+
+typedef struct queue {
+  queue_node *front;
+  queue_node *rear;
+} Queue;
+
 void unit_test_houses();
 void unit_test_places();
 place *get_map_places(char *map_name);
@@ -88,5 +104,12 @@ void add_street_to_node(hash_entry **hash_table, long long node_id,
                         edge *segment);
 hash_entry **build_street_graph(edge *street_list);
 void free_hash_map(hash_entry **hash_table);
+<<<<<<< HEAD
+=======
+
+Path *compute_bfs(hash_entry **graph, long long start_node, long long end_node);
+void print_route(Path *finish_path);
+void free_queue(Queue *q);
+>>>>>>> 1fe177afe055b465310aaaa6f7c8201e2bdd91c3
 
 #endif

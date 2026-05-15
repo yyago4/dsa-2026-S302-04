@@ -676,4 +676,136 @@ void free_hash_map(hash_entry **hash_table) {
     }
   }
   free(hash_table);
+<<<<<<< HEAD
+=======
+}
+
+void enqueue(Queue *q, Path *path_data) {
+  queue_node *new_node = malloc(
+      sizeof(queue_node)); // reservem espai de moemoria per a un node de la cua
+  new_node->path_data =
+      path_data; // guardem l'adreça de memoria on esta la info del cami
+  new_node->next = NULL; // de moment no apunta en lloc
+  if (q->rear == NULL) {
+    q->front = q->rear = new_node;
+    return;
+  }
+  q->rear->next =
+      new_node; // connectem l'ultim bloc actual amb el nou espai de memoria
+  q->rear = new_node; // actualitzem el punter final perque apunti al nou bloc
+}
+
+Path *dequeue(Queue *q) {
+  if (q->front == NULL) {
+    return NULL;
+  }
+  queue_node *temp =
+      q->front; // guardem temporalment l'adreça del primer bloc de memoria
+  Path *data = temp->path_data; // extreiem la info del cami
+  q->front = q->front->next;    // movem el punter inicial al seguent bloc de
+                                // memoria de la fila
+  if (q->front == NULL) {
+    q->rear = NULL;
+  }
+  free(temp);  // alliberem l'espai de memoria
+  return data; // retornme les dades del cami per analitzarles
+}
+
+Path *compute_bfs(hash_entry **graph, long long start_node,
+                  long long end_node) {
+  Queue q = {NULL, NULL}; // inicialitzem la cua buida de punters
+
+  int start_index = hash_function(
+      start_node); // caluclem la posicio a la taula o es guarda l'inici
+  hash_entry *start_entry =
+      graph[start_index]; // accedima  l'espai de memoria d'aquella entrada
+  while (start_entry != NULL && start_entry->node_id != start_node) {
+    start_entry =
+        start_entry
+            ->next; // busquem el blocde memoria exacte de la nostra cantonada
+  }
+  if (start_entry == NULL) {
+    return NULL;
+  }
+  street_node *s_node =
+      start_entry
+          ->streets; // mirem els carrers connectats a aquest espai de memoria
+  while (s_node != NULL) { // recorrem cada carrer trobat
+    Path *initial_path = malloc(sizeof(Path));
+    initial_path->node_id = (s_node->street_segment->node1 == start_node)
+                                ? s_node->street_segment->node2
+                                : s_node->street_segment->node1;
+    initial_path->edge_taken =
+        s_node->street_segment; // guardem el punter a la info del carrer usat
+    initial_path->parent = NULL;
+
+    enqueue(&q, initial_path); // posem l'adreça d'aquest espai de memoria a la
+                               // fila d'espera
+    s_node = s_node->next;     // pasem al seguent carrer de la llista
+  }
+
+  while (q.front != NULL) {
+    Path *current_path =
+        dequeue(&q); // agafem el bloc de memoria mes antic de la cua
+    long long current_node =
+        current_path->node_id; // mirem quin ID DE cantonadate guatrdat
+
+    if (current_node ==
+        end_node) { // si l'ID coincideix amb el desti, alliberem la memoria
+                    // sobran i retornem el punter
+      free_queue(&q);
+      return current_path;
+    }
+
+    int idx = hash_function(current_node); // calculem on es guatrda la info
+                                           // d'aquesta nova cantonada
+    hash_entry *entry = graph[idx]; // anem a l'entrada corresponent del graf
+    while (entry != NULL && entry->node_id != current_node) {
+      entry = entry->next; // busquem el bloc de memoria de la interseccio
+                           // actual
+    }
+
+    if (entry != NULL) {
+      street_node *next_s =
+          entry->streets; // accedim a la llista de carrers connectats
+      while (next_s != NULL) {
+        edge *e =
+            next_s->street_segment; // agafem el punter a les dades del carrer
+        long long next_node = (e->node1 == current_node)
+                                  ? e->node2
+                                  : e->node1; // mirem cap a on apunta
+
+        Path *new_step = malloc(sizeof(Path)); // reservem espai en memoria
+        new_step->node_id = next_node; // guardem la ID de la seguent cantonada
+        new_step->edge_taken = e;      // guardem el punter al carrer utilitzat
+        new_step->parent = current_path; // conectem aquest bloc amb l'espai de
+                                         // memoria anterior
+
+        enqueue(&q, new_step); // afegim l'adreça d'aquest nou bloc a la cua
+        next_s = next_s->next; // pasem al seguent carrer en memoria
+      }
+    }
+  }
+  return NULL;
+}
+
+void free_queue(Queue *q) {
+  while (q->front != NULL) {
+    dequeue(q);
+  }
+}
+
+void print_route(Path *finish_path) {
+  if (finish_path ==
+      NULL) { // si el punter iniclia esta buit, finalitza la funcio
+    return;
+  }
+
+  if (finish_path->parent != NULL) {
+    print_route(
+        finish_path
+            ->parent); // cridem la funcio de nou amb l'adreça del bloc anterior
+    printf("Go trhough: %s\n", finish_path->edge_taken->name);
+  }
+>>>>>>> 1fe177afe055b465310aaaa6f7c8201e2bdd91c3
 }
