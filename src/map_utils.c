@@ -623,7 +623,7 @@ void add_street_to_node(hash_entry **hash_table, long long node_id,
   if (entry == NULL) {
     entry = malloc(sizeof(hash_entry)); // demanem espai nou per poder crear la
                                         // seccio de la cruilla
-    entry->node_id = node_id; // apuntem el numero de la cruilla
+    entry->node_id = node_id;           // apuntem el numero de la cruilla
     entry->streets =
         NULL; // suposem que inicialment la llista de carreres esta buida
     entry->next = hash_table[index]; // si ja hi havia altres cruilles al
@@ -707,7 +707,7 @@ Path *dequeue(Queue *q) {
       q->front; // guardem temporalment l'adreça del primer bloc de memoria
   Path *data = temp->path_data; // extreiem la info del cami
   q->front = q->front->next;    // movem el punter inicial al seguent bloc de
-                             // memoria de la fila
+                                // memoria de la fila
   if (q->front == NULL) {
     q->rear = NULL;
   }
@@ -745,7 +745,7 @@ Path *compute_bfs(hash_entry **graph, long long start_node,
 
     enqueue(&q, initial_path); // posem l'adreça d'aquest espai de memoria a la
                                // fila d'espera
-    s_node = s_node->next; // pasem al seguent carrer de la llista
+    s_node = s_node->next;     // pasem al seguent carrer de la llista
   }
 
   while (q.front != NULL) {
