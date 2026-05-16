@@ -806,19 +806,52 @@ void free_queue(Queue *q) {
   }
 }
 
+
+void latlon_to_xy(double lat_ref, double lon_ref,
+                  double lat, double lon,
+                  double *x, double *y) {
+    double lat_ref_rad = toRadians(lat_ref);//convertim la diferencaia de lat i lon a metres aprox
+    double dlat = toRadians(lat - lat_ref);//diferencia de latitud en radianes
+    double dlon = toRadians(lon - lon_ref);//diferencia de longitud en radianes
+    *x = EARTH_RADIUS * dlon * cos(lat_ref_rad);//coordenada x en km
+    *y = EARTH_RADIUS * dlat;//coordenada y en km
+}
+
 void print_route(Path *finish_path) {
   if (finish_path ==
       NULL) { // si el punter iniclia esta buit, finalitza la funcio
     return;
   }
 
-
-  if (finish_path->parent != NULL) {
-    print_route(
-        finish_path
-            ->parent); // cridem la funcio de nou amb l'adreça del bloc anterior
-    printf("Go trhough: %s\n", finish_path->edge_taken->name);
+  if (finish_path->parent == NULL){//cas base: si no te pare, es el primer pas del cami, el carrer inicail
+    printf("  Start at %s\n", finish_path->edge_taken->name);//imprimir el nom del carrer inicial
+    return;
   }
+
+  print_route(finish_path->parent);//cridem recursivament la funcio per imprimir els pasos anteriors (cami en ordre correcte del principi al final)
+
+  edge *prev_edge=finish_path->parent->edge_taken;//segment anterior AB
+  edge *curr_edge=finish_path->edge_taken;// segment actual BC
+
+  // els pts del gir: A(inici segment anterior), B(pt de connexio entre dos segments), C(final segment actual)
+  double ax=0, ay=0;//A
+  double bx=0, by=0;//B
+  double cx=0, cy=0;//C
+//agafem les referencies a partir de lat1/lonq del node anterior
+  double lat_ref=prev_edge->lat1;
+  double lon_ref=prev_edge->lon1;
+//ara convertim els tres pts a coordenades
+  latlon_to_xy(lat_ref, lon_ref,prev_edge->lat1,prev_edge->lon1,&ax,&ay);
+  latlon_to_xy(lat_ref, lon_ref,prev_edge->lat2,prev_edge->lon2,&bx,&by);
+  latlon_to_xy(lat_ref, lon_ref,curr_edge->lat2,curr_edge->lon2,&cx,&cy);
+
+ double cross=(bx-ax)*(cy-by)-(by-ay)*(cx-bx);//producte vectorial fent servir  el cross product
+ //determinem cap a on gira i imprimim les indicacions 
+ if(cross>0){
+  printf("Turn left to %s and continue for %dm\n",curr_edge->name, (int)curr_edge->length);
+ }else{
+  printf("Turn right to %s and continue for %dm\n",curr_edge->name, (int)curr_edge->length);
+ }
 }
 
 int is_visited(visited_entry ** visited_map, long long node_id){ //comprovem si el node ja ha estat visitat mirant al seu calaix del hash map

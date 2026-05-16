@@ -117,4 +117,6 @@ void free_queue(Queue *q);
 int is_visited(visited_entry ** visited_map, long long node_id);
 void mark_visited(visited_entry **visited_map, long long node_id);
 void free_visited(visited_entry **visited_map);
+
+void latlon_to_xy(double lat_ref, double lon_ref, double lat, double lon, double *x, double *y);
 #endif
