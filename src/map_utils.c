@@ -676,8 +676,6 @@ void free_hash_map(hash_entry **hash_table) {
     }
   }
   free(hash_table);
-<<<<<<< HEAD
-=======
 }
 
 void enqueue(Queue *q, Path *path_data) {
@@ -715,6 +713,9 @@ Path *compute_bfs(hash_entry **graph, long long start_node,
                   long long end_node) {
   Queue q = {NULL, NULL}; // inicialitzem la cua buida de punters
 
+  visited_entry **visited_map=calloc(HASH_SIZE,sizeof(visited_entry*));//creem el hashmap de visitats
+  if(visited_map==NULL){return NULL;}//si falla surtim
+
   int start_index = hash_function(
       start_node); // caluclem la posicio a la taula o es guarda l'inici
   hash_entry *start_entry =
@@ -727,6 +728,9 @@ Path *compute_bfs(hash_entry **graph, long long start_node,
   if (start_entry == NULL) {
     return NULL;
   }
+//marquem el node inicial com visitat
+mark_visited(visited_map,start_node);
+
   street_node *s_node =
       start_entry
           ->streets; // mirem els carrers connectats a aquest espai de memoria
@@ -749,11 +753,15 @@ Path *compute_bfs(hash_entry **graph, long long start_node,
         dequeue(&q); // agafem el bloc de memoria mes antic de la cua
     long long current_node =
         current_path->node_id; // mirem quin ID DE cantonadate guatrdat
+    if(is_visited(visited_map,current_node)){continue;}//si ja esta visitat el node, el saltem, nem al seguent
+    
+    mark_visited(visited_map,current_node);//marquem el node actual com visitat
 
     if (current_node ==
         end_node) { // si l'ID coincideix amb el desti, alliberem la memoria
                     // sobran i retornem el punter
       free_queue(&q);
+      free_visited(visited_map); //tambe alliberem la llista
       return current_path;
     }
 
@@ -774,7 +782,7 @@ Path *compute_bfs(hash_entry **graph, long long start_node,
         long long next_node = (e->node1 == current_node)
                                   ? e->node2
                                   : e->node1; // mirem cap a on apunta
-
+        if(!is_visited(visited_map,next_node)){//nomes si el vei no esta visitat afegim el path
         Path *new_step = malloc(sizeof(Path)); // reservem espai en memoria
         new_step->node_id = next_node; // guardem la ID de la seguent cantonada
         new_step->edge_taken = e;      // guardem el punter al carrer utilitzat
@@ -782,10 +790,13 @@ Path *compute_bfs(hash_entry **graph, long long start_node,
                                          // memoria anterior
 
         enqueue(&q, new_step); // afegim l'adreça d'aquest nou bloc a la cua
+        }
         next_s = next_s->next; // pasem al seguent carrer en memoria
       }
     }
   }
+
+  free_visited(visited_map);
   return NULL;
 }
 
@@ -801,11 +812,44 @@ void print_route(Path *finish_path) {
     return;
   }
 
+
   if (finish_path->parent != NULL) {
     print_route(
         finish_path
             ->parent); // cridem la funcio de nou amb l'adreça del bloc anterior
     printf("Go trhough: %s\n", finish_path->edge_taken->name);
   }
->>>>>>> 1fe177afe055b465310aaaa6f7c8201e2bdd91c3
+}
+
+int is_visited(visited_entry ** visited_map, long long node_id){ //comprovem si el node ja ha estat visitat mirant al seu calaix del hash map
+  int idx = (int)( node_id % HASH_SIZE);//calculem el calaix
+  visited_entry *entry = visited_map[idx];//anem al calaix
+  while(entry!=NULL){
+    if(entry->node_id==node_id){// si trobem el node es perque ha estat visitat
+      return 1;
+    }
+    entry=entry->next;
+  }
+  return 0;
+}
+
+void mark_visited(visited_entry **visited_map, long long node_id){// aafegim un node al hash map de visitats
+int idx = (int)(node_id%HASH_SIZE);//calculem el calaix
+visited_entry *new_entry = malloc(sizeof(visited_entry));//resem la memoria 
+if(new_entry==NULL){return;}//si falla la memoria surtim
+new_entry->node_id=node_id; // guardem Id del node
+new_entry->next=visited_map[idx]; //posem els que havien
+visited_map[idx]=new_entry;//el nou pasa al davant de la cola
+}
+
+void free_visited(visited_entry **visited_map){//alliberem la memoria de hashmap de visitats
+  for(int i=0; i< HASH_SIZE; i++){
+    visited_entry*entry=visited_map[i];
+    while(entry!=NULL){
+      visited_entry *tmp=entry;
+      entry=entry->next;
+      free(tmp);
+    }
+  }
+  free(visited_map);
 }

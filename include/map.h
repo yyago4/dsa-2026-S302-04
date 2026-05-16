@@ -78,6 +78,11 @@ typedef struct queue {
   queue_node *rear;
 } Queue;
 
+typedef struct visited_entry{
+long long node_id;
+struct visited_entry *next;
+} visited_entry;
+
 void unit_test_houses();
 void unit_test_places();
 place *get_map_places(char *map_name);
@@ -104,12 +109,12 @@ void add_street_to_node(hash_entry **hash_table, long long node_id,
                         edge *segment);
 hash_entry **build_street_graph(edge *street_list);
 void free_hash_map(hash_entry **hash_table);
-<<<<<<< HEAD
-=======
 
 Path *compute_bfs(hash_entry **graph, long long start_node, long long end_node);
 void print_route(Path *finish_path);
 void free_queue(Queue *q);
->>>>>>> 1fe177afe055b465310aaaa6f7c8201e2bdd91c3
 
+int is_visited(visited_entry ** visited_map, long long node_id);
+void mark_visited(visited_entry **visited_map, long long node_id);
+void free_visited(visited_entry **visited_map);
 #endif
