@@ -894,7 +894,7 @@ void mark_visited(
   visited_entry *new_entry = malloc(sizeof(visited_entry)); // resem la memoria
   if (new_entry == NULL) {
     return;
-  }                                   // si falla la memoria surtim
+  } // si falla la memoria surtim
   new_entry->node_id = node_id;       // guardem Id del node
   new_entry->next = visited_map[idx]; // posem els que havien
   visited_map[idx] = new_entry;       // el nou pasa al davant de la cola
