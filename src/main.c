@@ -194,7 +194,8 @@ int main() {
       int found_p = 0;            // variable per saber si n'hem trobat algun
 
       while (curr_p != NULL) { // mirem cada lloc de la llista fins al final
-        if (strcasecmp(curr_p->name, search_place) == 0) { // si el nom coincideix (insensible a majúscules)
+        if (strcasecmp(curr_p->name, search_place) ==
+            0) { // si el nom coincideix (insensible a majúscules)
           matches[match_count++] = curr_p; // el guardem a la llista de trobats
           if (match_count >= MAX_STR)
             break; // si la llista s'omple, parem

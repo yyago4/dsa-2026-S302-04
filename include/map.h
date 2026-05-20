@@ -78,9 +78,9 @@ typedef struct queue {
   queue_node *rear;
 } Queue;
 
-typedef struct visited_entry{
-long long node_id;
-struct visited_entry *next;
+typedef struct visited_entry {
+  long long node_id;
+  struct visited_entry *next;
 } visited_entry;
 
 void unit_test_houses();
@@ -114,9 +114,10 @@ Path *compute_bfs(hash_entry **graph, long long start_node, long long end_node);
 void print_route(Path *finish_path);
 void free_queue(Queue *q);
 
-int is_visited(visited_entry ** visited_map, long long node_id);
+int is_visited(visited_entry **visited_map, long long node_id);
 void mark_visited(visited_entry **visited_map, long long node_id);
 void free_visited(visited_entry **visited_map);
 
-void latlon_to_xy(double lat_ref, double lon_ref, double lat, double lon, double *x, double *y);
+void latlon_to_xy(double lat_ref, double lon_ref, double lat, double lon,
+                  double *x, double *y);
 #endif
