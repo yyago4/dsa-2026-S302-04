@@ -232,6 +232,10 @@ int main() {
         }
         if (t) { // guardem el numero de la cruilla per al GPS
           current_node = t->node1;
+          printf("    Closest street: %s\n", t->name); // nom del carrer proper
+          printf("    Between %lld (%.6f, %.6f) and %lld (%.6f, %.6f)\n",
+                 t->node1, t->lat1, t->lon1, t->node2, t->lat2,
+                 t->lon2); // les 2 interseccions del segment
         }
       }
 
@@ -335,6 +339,11 @@ int main() {
             }
             if (t) { // guardem el numero de la cruilla per al GPS
               current_node = t->node1;
+              printf("    Closest street: %s\n",
+                     t->name); // nom del carrer proper
+              printf("    Between %lld (%.6f, %.6f) and %lld (%.6f, %.6f)\n",
+                     t->node1, t->lat1, t->lon1, t->node2, t->lat2,
+                     t->lon2); // les 2 interseccions del segment
             }
             break; // sortim del bucle ara queja l'hem trobat
           }

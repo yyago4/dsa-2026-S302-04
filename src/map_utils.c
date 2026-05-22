@@ -738,17 +738,19 @@ Path *compute_bfs(hash_entry **graph, long long start_node,
       start_entry
           ->streets; // mirem els carrers connectats a aquest espai de memoria
   while (s_node != NULL) { // recorrem cada carrer trobat
-    Path *initial_path = malloc(sizeof(Path));
-    initial_path->node_id = (s_node->street_segment->node1 == start_node)
-                                ? s_node->street_segment->node2
-                                : s_node->street_segment->node1;
-    initial_path->edge_taken =
-        s_node->street_segment; // guardem el punter a la info del carrer usat
-    initial_path->parent = NULL;
+    edge *e = s_node->street_segment;
+    if (e->node1 == start_node) { // nomes avancem en el sentit correcte del
+                                  // carrer (node1 -> node2)
+      Path *initial_path = malloc(sizeof(Path));
+      initial_path->node_id = e->node2;
+      initial_path->edge_taken =
+          e; // guardem el punter a la info del carrer usat
+      initial_path->parent = NULL;
 
-    enqueue(&q, initial_path); // posem l'adreça d'aquest espai de memoria a la
-                               // fila d'espera
-    s_node = s_node->next;     // pasem al seguent carrer de la llista
+      enqueue(&q, initial_path); // posem l'adreça d'aquest espai de memoria a
+                                 // la fila d'espera
+    }
+    s_node = s_node->next; // pasem al seguent carrer de la llista
   }
 
   while (q.front != NULL) {
@@ -785,20 +787,21 @@ Path *compute_bfs(hash_entry **graph, long long start_node,
       while (next_s != NULL) {
         edge *e =
             next_s->street_segment; // agafem el punter a les dades del carrer
-        long long next_node = (e->node1 == current_node)
-                                  ? e->node2
-                                  : e->node1; // mirem cap a on apunta
-        if (!is_visited(
-                visited_map,
-                next_node)) { // nomes si el vei no esta visitat afegim el path
-          Path *new_step = malloc(sizeof(Path)); // reservem espai en memoria
-          new_step->node_id =
-              next_node;            // guardem la ID de la seguent cantonada
-          new_step->edge_taken = e; // guardem el punter al carrer utilitzat
-          new_step->parent = current_path; // conectem aquest bloc amb l'espai
-                                           // de memoria anterior
+        if (e->node1 == current_node) {   // nomes avancem en el sentit correcte
+                                          // del carrer (node1 -> node2)
+          long long next_node = e->node2; // mirem cap a on apunta
+          if (!is_visited(visited_map,
+                          next_node)) { // nomes si el vei no esta visitat
+                                        // afegim el path
+            Path *new_step = malloc(sizeof(Path)); // reservem espai en memoria
+            new_step->node_id =
+                next_node;            // guardem la ID de la seguent cantonada
+            new_step->edge_taken = e; // guardem el punter al carrer utilitzat
+            new_step->parent = current_path; // conectem aquest bloc amb l'espai
+                                             // de memoria anterior
 
-          enqueue(&q, new_step); // afegim l'adreça d'aquest nou bloc a la cua
+            enqueue(&q, new_step); // afegim l'adreça d'aquest nou bloc a la cua
+          }
         }
         next_s = next_s->next; // pasem al seguent carrer en memoria
       }
@@ -864,10 +867,10 @@ void print_route(Path *finish_path) {
       (by - ay) * (cx - bx); // producte vectorial fent servir  el cross product
   // determinem cap a on gira i imprimim les indicacions
   if (cross > 0) {
-    printf("Turn left to %s and continue for %dm\n", curr_edge->name,
+    printf("  Turn left to %s and continue for %dm\n", curr_edge->name,
            (int)curr_edge->length);
   } else {
-    printf("Turn right to %s and continue for %dm\n", curr_edge->name,
+    printf("  Turn right to %s and continue for %dm\n", curr_edge->name,
            (int)curr_edge->length);
   }
 }
