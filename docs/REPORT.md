@@ -1,5 +1,4 @@
 # Report
-# Report
 ## 1. Runtime complexity: initializing the intersections map
 
 La función `build_street_graph` recorre todos los segmentos de calle una vez para construir la tabla hash del grafo. Si **n** es el número de segmentos, el bucle principal ejecuta **n** iteraciones, llamando dos veces a `add_street_to_node` por segmento (una por cada extremo), lo cual es una constante.
