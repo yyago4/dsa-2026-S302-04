@@ -729,6 +729,7 @@ Path *compute_bfs(hash_entry **graph, long long start_node,
             ->next; // busquem el blocde memoria exacte de la nostra cantonada
   }
   if (start_entry == NULL) {
+    free_visited(visited_map); // alliberem el hashmap abans de sortir
     return NULL;
   }
   // marquem el node inicial com visitat
@@ -759,6 +760,7 @@ Path *compute_bfs(hash_entry **graph, long long start_node,
     long long current_node =
         current_path->node_id; // mirem quin ID DE cantonadate guatrdat
     if (is_visited(visited_map, current_node)) {
+      free(current_path); // alliberem el path que hem tret de la cua pero no farem servir
       continue;
     } // si ja esta visitat el node, el saltem, nem al seguent
 

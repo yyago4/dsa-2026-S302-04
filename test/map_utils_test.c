@@ -57,10 +57,10 @@ void test_hash_map() {
   successtest();
 }
 
-void test_bfs_directed() {
-  runningtest("test_bfs_directed");
+void test_bfs() {
+  runningtest("test_bfs");
 
-  // Creem un circuit dirigit de 4 carrers de sentit únic:
+  // Creem 4 carrers que formen un circuit amb sentit únic:
   // e1: 1 -> 2
   // e2: 2 -> 3
   // e3: 3 -> 4
@@ -96,15 +96,15 @@ void test_bfs_directed() {
 
   hash_entry **graph = build_street_graph(e1);
 
-  // 1. Ruta directa: de 1 a 3. Ha de ser: 1 -> 2 -> 3.
+  // Cas 1: camí directe de 1 a 3, hauria de ser 1 -> 2 -> 3
   Path *path1 = compute_bfs(graph, 1, 3);
   int path1_ok = 0;
   if (path1 != NULL) {
-    // Reconstruïm anant cap enrere
-    // El final ha de ser el node 3 (arribat des d'e2)
+    // anem cap enrere des del node final
+    // el final ha de ser el node 3, que ve de l'aresta e2
     if (path1->node_id == 3 && path1->edge_taken->id == 2) {
       Path *parent1 = path1->parent;
-      // L'anterior ha de ser el node 2 (arribat des d'e1)
+      // abans del 3 hi ha el node 2, que ve de l'aresta e1
       if (parent1 != NULL && parent1->node_id == 2 &&
           parent1->edge_taken->id == 1) {
         if (parent1->parent == NULL) {
@@ -115,9 +115,7 @@ void test_bfs_directed() {
   }
   assertEqualsInt(path1_ok, 1);
 
-  // Alliberem el camí trobat
-  // El BFS només allibera la cua i el visited_map, però no el camí retornat,
-  // així que cal alliberar-lo a mà
+  // cal alliberar el camí a mà perquè el BFS no ho fa
   Path *curr = path1;
   while (curr != NULL) {
     Path *tmp = curr;
@@ -125,21 +123,20 @@ void test_bfs_directed() {
     free(tmp);
   }
 
-  // 2. Ruta indirecta per sentit únic: de 3 a 2.
-  // Com que no es pot anar enrere (3 -> 2 és prohibit ja que e2 va de 2 a 3),
-  // la ruta obligada dirigit ha de fer tota la volta: 3 -> 4 -> 1 -> 2.
+  // Cas 2: de 3 a 2 no hi ha camí directe (e2 va de 2->3, no al revés)
+  // llavors ha de donar la volta sencera: 3 -> 4 -> 1 -> 2
   Path *path2 = compute_bfs(graph, 3, 2);
   int path2_ok = 0;
   if (path2 != NULL) {
-    // Reconstruïm anant cap enrere
-    // Final: node 2 (des de e1)
+    // anem cap enrere des del final
+    // final: node 2, ve de l'aresta e1
     if (path2->node_id == 2 && path2->edge_taken->id == 1) {
       Path *parent1 = path2->parent;
-      // Node anterior: node 1 (des de e4)
+      // abans: node 1, ve de l'aresta e4
       if (parent1 != NULL && parent1->node_id == 1 &&
           parent1->edge_taken->id == 4) {
         Path *parent2 = parent1->parent;
-        // Node anterior: node 4 (des de e3)
+        // abans: node 4, ve de l'aresta e3
         if (parent2 != NULL && parent2->node_id == 4 &&
             parent2->edge_taken->id == 3) {
           if (parent2->parent == NULL) {
@@ -151,7 +148,7 @@ void test_bfs_directed() {
   }
   assertEqualsInt(path2_ok, 1);
 
-  // Alliberem el segon camí
+  // alliberem el segon camí igual que abans
   curr = path2;
   while (curr != NULL) {
     Path *tmp = curr;
@@ -159,7 +156,7 @@ void test_bfs_directed() {
     free(tmp);
   }
 
-  // Alliberem la taula hash i els carrers
+  // alliberem tot el que hem creat
   free_hash_map(graph);
   free(e1);
   free(e2);
@@ -173,7 +170,7 @@ void map_utils_test() {
   running("map_utils_test");
   {
     test_hash_map();
-    test_bfs_directed();
+    test_bfs();
   }
   success();
 }
