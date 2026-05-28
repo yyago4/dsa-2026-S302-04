@@ -302,21 +302,27 @@ place *get_map_places(char *map_name) {
 
     token =
         strtok(NULL, ","); // busquem el primer tros, que sera el nom del lloc
-    if (token == NULL)
-      continue;                 // si la linea esta buida, saltem al la seguent
+    if (token == NULL) {
+      free(new_p);  // alliberem la memoria si la linea esta buida
+      continue;
+    }
     strcpy(new_p->name, token); // copiem el nom a la fitza del nou lloc
 
     token = strtok(NULL, ","); // ignorem el tipus
 
     token = strtok(NULL, ","); // busquem el primer tros, que sera la latitud
-    if (token == NULL)
-      continue;               // si la linea esta buida, saltem al la seguent
+    if (token == NULL) {
+      free(new_p);  // alliberem la memoria si la linea esta buida
+      continue;
+    }
     new_p->lat = atof(token); // convertim el text de latitud a numero real
                               // doble, de ascii a float
 
     token = strtok(NULL, ","); // busquem el primer tros, que sera la longitud
-    if (token == NULL)
-      continue;               // si la linea esta buida, saltem al la seguent
+    if (token == NULL) {
+      free(new_p);  // alliberem la memoria si la linea esta buida
+      continue;
+    }
     new_p->lon = atof(token); // convertim el text de longitud a numero real
                               // doble, de ascii a float
 
@@ -361,25 +367,33 @@ house *get_map_houses(char *map_name) {
 
     char *token =
         strtok(line, ","); // busquem el primer tros, que sera el nom del lloc
-    if (token == NULL)
-      continue; // si la linea esta buida, saltem al la seguent
+    if (token == NULL) {
+      free(new_h);  // alliberem la memoria si la linea esta buida
+      continue;
+    }
     strcpy(new_h->street, token); // copiem el nom a la fitza del nou lloc
 
     token = strtok(NULL, ","); // busquem el primer tros, que sera la latitud
-    if (token == NULL)
-      continue;               // si la linea esta buida, saltem al la seguent
+    if (token == NULL) {
+      free(new_h);  // alliberem la memoria si la linea esta buida
+      continue;
+    }
     new_h->num = atoi(token); // convertim el text de latitud a numero real
                               // doble, de ascii a float
 
     token = strtok(NULL, ","); // busquem el primer tros, que sera la latitud
-    if (token == NULL)
-      continue;               // si la linea esta buida, saltem al la seguent
+    if (token == NULL) {
+      free(new_h);  // alliberem la memoria si la linea esta buida
+      continue;
+    }
     new_h->lat = atof(token); // convertim el text de latitud a numero real
                               // doble, de ascii a float
 
     token = strtok(NULL, ","); // busquem el primer tros, que sera la longitud
-    if (token == NULL)
-      continue;               // si la linea esta buida, saltem al la seguent
+    if (token == NULL) {
+      free(new_h);  // alliberem la memoria si la linea esta buida
+      continue;
+    }
     new_h->lon = atof(token); // convertim el text de longitud a numero real
                               // doble, de ascii a float
 
@@ -623,6 +637,9 @@ void add_street_to_node(hash_entry **hash_table, long long node_id,
   if (entry == NULL) {
     entry = malloc(sizeof(hash_entry)); // demanem espai nou per poder crear la
                                         // seccio de la cruilla
+    if (entry == NULL) {                // si no hi ha memoria, sortim
+      return;
+    }
     entry->node_id = node_id;           // apuntem el numero de la cruilla
     entry->streets =
         NULL; // suposem que inicialment la llista de carreres esta buida
@@ -632,7 +649,10 @@ void add_street_to_node(hash_entry **hash_table, long long node_id,
         entry; // posem aquesta nova seccio al principi del calaix
   }
   street_node *new_s_node =
-      malloc(sizeof(street_node));      // creem una fitza per al carrer
+      malloc(sizeof(street_node)); // creem una fitxa per al carrer
+  if (new_s_node == NULL) {       // si no hi ha memoria, sortim
+    return;
+  }
   new_s_node->street_segment = segment; // apuntem quin carrer es
   new_s_node->next =
       entry->streets; // afegim els carrers que ja teniem abans d'aquest

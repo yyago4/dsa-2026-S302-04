@@ -54,7 +54,7 @@ int main() {
   int street_count = 0;
   for (edge *e = street_list; e != NULL; e = e->next)
     street_count++;
-  printf("%d street loaded\n\n", street_count);
+  printf("%d streets loaded\n\n", street_count);
 
   hash_entry **street_hash = build_street_graph(
       street_list); // organitzem els carrers en calaixos segons la seva cruilla
