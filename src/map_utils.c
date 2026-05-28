@@ -543,7 +543,7 @@ void unit_test_streets() {
     printf("Error: Out of memory!\n");
     return;
   }
-  e1->id = 0;
+  e1->id = 0; //inicializamos todo manualmente para que no haya ningun tipo de error a la hora de usar los campos
   e1->node1 = 100;
   e1->lat1 = 41.40;
   e1->lon1 = 2.19;

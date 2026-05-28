@@ -14,12 +14,22 @@ void test_hash_map() {
   e1->id = 101;
   e1->node1 = 10;
   e1->node2 = 20;
+  e1->lat1 = 41.40;//inicializamos todos los campos manualmente para que no lleve a ningun tipo de error
+  e1->lon1 = 2.19;
+  e1->lat2 = 41.41;
+  e1->lon2 = 2.20;
+  e1->length = 100.0;
   strcpy(e1->name, "Carrer A");
   e1->next = e2;
 
   e2->id = 102;
   e2->node1 = 20;
   e2->node2 = 30;
+  e2->lat1 = 41.41;
+  e2->lon1 = 2.20;
+  e2->lat2 = 41.42;
+  e2->lon2 = 2.21;
+  e2->length = 150.0;
   strcpy(e2->name, "Carrer B");
   e2->next = NULL;
 
@@ -73,24 +83,44 @@ void test_bfs() {
   e1->id = 1;
   e1->node1 = 1;
   e1->node2 = 2;
+  e1->lat1 = 41.40;//inicializamos todos los campos manualmente para que no lleve a ningun tipo de error
+  e1->lon1 = 2.19;
+  e1->lat2 = 41.41;
+  e1->lon2 = 2.20;
+  e1->length = 100.0;
   strcpy(e1->name, "Carrer 1-2");
   e1->next = e2;
 
   e2->id = 2;
   e2->node1 = 2;
   e2->node2 = 3;
+  e2->lat1 = 41.41;
+  e2->lon1 = 2.20;
+  e2->lat2 = 41.42;
+  e2->lon2 = 2.21;
+  e2->length = 150.0;
   strcpy(e2->name, "Carrer 2-3");
   e2->next = e3;
 
   e3->id = 3;
   e3->node1 = 3;
   e3->node2 = 4;
+  e3->lat1 = 41.42;
+  e3->lon1 = 2.21;
+  e3->lat2 = 41.43;
+  e3->lon2 = 2.22;
+  e3->length = 200.0;
   strcpy(e3->name, "Carrer 3-4");
   e3->next = e4;
 
   e4->id = 4;
   e4->node1 = 4;
   e4->node2 = 1;
+  e4->lat1 = 41.43;
+  e4->lon1 = 2.22;
+  e4->lat2 = 41.40;
+  e4->lon2 = 2.19;
+  e4->length = 250.0;
   strcpy(e4->name, "Carrer 4-1");
   e4->next = NULL;
 
