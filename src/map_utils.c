@@ -303,7 +303,7 @@ place *get_map_places(char *map_name) {
     token =
         strtok(NULL, ","); // busquem el primer tros, que sera el nom del lloc
     if (token == NULL) {
-      free(new_p);  // alliberem la memoria si la linea esta buida
+      free(new_p); // alliberem la memoria si la linea esta buida
       continue;
     }
     strcpy(new_p->name, token); // copiem el nom a la fitza del nou lloc
@@ -312,7 +312,7 @@ place *get_map_places(char *map_name) {
 
     token = strtok(NULL, ","); // busquem el primer tros, que sera la latitud
     if (token == NULL) {
-      free(new_p);  // alliberem la memoria si la linea esta buida
+      free(new_p); // alliberem la memoria si la linea esta buida
       continue;
     }
     new_p->lat = atof(token); // convertim el text de latitud a numero real
@@ -320,7 +320,7 @@ place *get_map_places(char *map_name) {
 
     token = strtok(NULL, ","); // busquem el primer tros, que sera la longitud
     if (token == NULL) {
-      free(new_p);  // alliberem la memoria si la linea esta buida
+      free(new_p); // alliberem la memoria si la linea esta buida
       continue;
     }
     new_p->lon = atof(token); // convertim el text de longitud a numero real
@@ -368,14 +368,14 @@ house *get_map_houses(char *map_name) {
     char *token =
         strtok(line, ","); // busquem el primer tros, que sera el nom del lloc
     if (token == NULL) {
-      free(new_h);  // alliberem la memoria si la linea esta buida
+      free(new_h); // alliberem la memoria si la linea esta buida
       continue;
     }
     strcpy(new_h->street, token); // copiem el nom a la fitza del nou lloc
 
     token = strtok(NULL, ","); // busquem el primer tros, que sera la latitud
     if (token == NULL) {
-      free(new_h);  // alliberem la memoria si la linea esta buida
+      free(new_h); // alliberem la memoria si la linea esta buida
       continue;
     }
     new_h->num = atoi(token); // convertim el text de latitud a numero real
@@ -383,7 +383,7 @@ house *get_map_houses(char *map_name) {
 
     token = strtok(NULL, ","); // busquem el primer tros, que sera la latitud
     if (token == NULL) {
-      free(new_h);  // alliberem la memoria si la linea esta buida
+      free(new_h); // alliberem la memoria si la linea esta buida
       continue;
     }
     new_h->lat = atof(token); // convertim el text de latitud a numero real
@@ -391,7 +391,7 @@ house *get_map_houses(char *map_name) {
 
     token = strtok(NULL, ","); // busquem el primer tros, que sera la longitud
     if (token == NULL) {
-      free(new_h);  // alliberem la memoria si la linea esta buida
+      free(new_h); // alliberem la memoria si la linea esta buida
       continue;
     }
     new_h->lon = atof(token); // convertim el text de longitud a numero real
@@ -557,7 +557,8 @@ void unit_test_streets() {
     printf("Error: Out of memory!\n");
     return;
   }
-  e1->id = 0; //inicializamos todo manualmente para que no haya ningun tipo de error a la hora de usar los campos
+  e1->id = 0; // inicializamos todo manualmente para que no haya ningun tipo de
+              // error a la hora de usar los campos
   e1->node1 = 100;
   e1->lat1 = 41.40;
   e1->lon1 = 2.19;
@@ -640,7 +641,7 @@ void add_street_to_node(hash_entry **hash_table, long long node_id,
     if (entry == NULL) {                // si no hi ha memoria, sortim
       return;
     }
-    entry->node_id = node_id;           // apuntem el numero de la cruilla
+    entry->node_id = node_id; // apuntem el numero de la cruilla
     entry->streets =
         NULL; // suposem que inicialment la llista de carreres esta buida
     entry->next = hash_table[index]; // si ja hi havia altres cruilles al
@@ -650,7 +651,7 @@ void add_street_to_node(hash_entry **hash_table, long long node_id,
   }
   street_node *new_s_node =
       malloc(sizeof(street_node)); // creem una fitxa per al carrer
-  if (new_s_node == NULL) {       // si no hi ha memoria, sortim
+  if (new_s_node == NULL) {        // si no hi ha memoria, sortim
     return;
   }
   new_s_node->street_segment = segment; // apuntem quin carrer es
@@ -780,7 +781,8 @@ Path *compute_bfs(hash_entry **graph, long long start_node,
     long long current_node =
         current_path->node_id; // mirem quin ID DE cantonadate guatrdat
     if (is_visited(visited_map, current_node)) {
-      free(current_path); // alliberem el path que hem tret de la cua pero no farem servir
+      free(current_path); // alliberem el path que hem tret de la cua pero no
+                          // farem servir
       continue;
     } // si ja esta visitat el node, el saltem, nem al seguent
 

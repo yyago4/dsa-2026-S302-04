@@ -14,7 +14,8 @@ void test_hash_map() {
   e1->id = 101;
   e1->node1 = 10;
   e1->node2 = 20;
-  e1->lat1 = 41.40;//inicializamos todos los campos manualmente para que no lleve a ningun tipo de error
+  e1->lat1 = 41.40; // inicializamos todos los campos manualmente para que no
+                    // lleve a ningun tipo de error
   e1->lon1 = 2.19;
   e1->lat2 = 41.41;
   e1->lon2 = 2.20;
@@ -83,7 +84,8 @@ void test_bfs() {
   e1->id = 1;
   e1->node1 = 1;
   e1->node2 = 2;
-  e1->lat1 = 41.40;//inicializamos todos los campos manualmente para que no lleve a ningun tipo de error
+  e1->lat1 = 41.40; // inicializamos todos los campos manualmente para que no
+                    // lleve a ningun tipo de error
   e1->lon1 = 2.19;
   e1->lat2 = 41.41;
   e1->lon2 = 2.20;
