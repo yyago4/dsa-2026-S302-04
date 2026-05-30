@@ -299,6 +299,8 @@ int main() {
         printf("Invalid number format.\n");
         free_houses(list); // si falla, alliberem la memoria abans de sortir
         free_places(place_list);
+        free_edges(street_list);
+        free_hash_map(street_hash);
         return 1;
       }
 

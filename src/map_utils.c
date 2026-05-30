@@ -702,6 +702,9 @@ void free_hash_map(hash_entry **hash_table) {
 void enqueue(Queue *q, Path *path_data) {
   queue_node *new_node = malloc(
       sizeof(queue_node)); // reservem espai de moemoria per a un node de la cua
+  if (new_node == NULL) {
+    return;
+  }
   new_node->path_data =
       path_data; // guardem l'adreça de memoria on esta la info del cami
   new_node->next = NULL; // de moment no apunta en lloc
@@ -764,13 +767,15 @@ Path *compute_bfs(hash_entry **graph, long long start_node,
     if (e->node1 == start_node) { // nomes avancem en el sentit correcte del
                                   // carrer (node1 -> node2)
       Path *initial_path = malloc(sizeof(Path));
-      initial_path->node_id = e->node2;
-      initial_path->edge_taken =
-          e; // guardem el punter a la info del carrer usat
-      initial_path->parent = NULL;
+      if (initial_path != NULL) {
+        initial_path->node_id = e->node2;
+        initial_path->edge_taken =
+            e; // guardem el punter a la info del carrer usat
+        initial_path->parent = NULL;
 
-      enqueue(&q, initial_path); // posem l'adreça d'aquest espai de memoria a
-                                 // la fila d'espera
+        enqueue(&q, initial_path); // posem l'adreça d'aquest espai de memoria a
+                                   // la fila d'espera
+      }
     }
     s_node = s_node->next; // pasem al seguent carrer de la llista
   }
@@ -818,13 +823,15 @@ Path *compute_bfs(hash_entry **graph, long long start_node,
                           next_node)) { // nomes si el vei no esta visitat
                                         // afegim el path
             Path *new_step = malloc(sizeof(Path)); // reservem espai en memoria
-            new_step->node_id =
-                next_node;            // guardem la ID de la seguent cantonada
-            new_step->edge_taken = e; // guardem el punter al carrer utilitzat
-            new_step->parent = current_path; // conectem aquest bloc amb l'espai
-                                             // de memoria anterior
+            if (new_step != NULL) {
+              new_step->node_id =
+                  next_node;            // guardem la ID de la seguent cantonada
+              new_step->edge_taken = e; // guardem el punter al carrer utilitzat
+              new_step->parent = current_path; // conectem aquest bloc amb l'espai
+                                               // de memoria anterior
 
-            enqueue(&q, new_step); // afegim l'adreça d'aquest nou bloc a la cua
+              enqueue(&q, new_step); // afegim l'adreça d'aquest nou bloc a la cua
+            }
           }
         }
         next_s = next_s->next; // pasem al seguent carrer en memoria
