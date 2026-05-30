@@ -827,10 +827,11 @@ Path *compute_bfs(hash_entry **graph, long long start_node,
               new_step->node_id =
                   next_node;            // guardem la ID de la seguent cantonada
               new_step->edge_taken = e; // guardem el punter al carrer utilitzat
-              new_step->parent = current_path; // conectem aquest bloc amb l'espai
-                                               // de memoria anterior
+              new_step->parent = current_path; // conectem aquest bloc amb
+                                               // l'espai de memoria anterior
 
-              enqueue(&q, new_step); // afegim l'adreça d'aquest nou bloc a la cua
+              enqueue(&q,
+                      new_step); // afegim l'adreça d'aquest nou bloc a la cua
             }
           }
         }
